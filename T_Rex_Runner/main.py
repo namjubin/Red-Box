@@ -151,6 +151,7 @@ class T_Rex_Runner:
     def draw_game(self):
         #pg.draw.rect(self.screen, (0,255,0), self.main_rect)
         #pg.draw.rect(self.screen, (255,0,0), self.floor_rect)
+        
 
         self.score_text = self.fontObj.render('%05d'%self.score, True, (80,80,80))
         self.score_text_rect = self.score_text.get_rect()
@@ -176,10 +177,11 @@ class T_Rex_Runner:
                 self.jump_func()
 
         if 0 < len(self.obstacle) and not self.collision:
+            #pg.draw.rect(self.screen, (255,0,0), self.obstacle[0][1]+list(self.obstacles[self.obstacle[0][0]].get_rect())[2:])
+            pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
             self.collide()
 
         if self.collision:
-            self.screen.blit(self.t_rex_over, self.t_rex_loc)
             for i in range(len(self.obstacle)):
                 if self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacles[self.obstacle[i][0]].get_width():
                     obstacle_surface =  self.obstacles[self.obstacle[i][0]].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacles[self.obstacle[i][0]].get_height()))
@@ -191,6 +193,8 @@ class T_Rex_Runner:
 
                 else:
                     self.screen.blit( self.obstacles[self.obstacle[i][0]], self.obstacle[i][1])
+
+            self.screen.blit(self.t_rex_over, self.t_rex_loc)
 
         elif self.runing:
             sub = 0
@@ -220,16 +224,19 @@ class T_Rex_Runner:
             if self.jump:
                 self.t_rex_loc = (self.main_rect[0]*2,(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_stop_img.get_height()+self.weight)
                 self.screen.blit(self.t_rex_stop_img, self.t_rex_loc)
+                pg.draw.lines(self.t_rex_stop_img,(255,0,0),1,self.t_rex_stop_mask.outline())
                 self.t_rex_state = 'stop'
 
             elif self.state:
                 self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run1_img.get_height()))
                 self.screen.blit(self.t_rex_run1_img, self.t_rex_loc)
+                pg.draw.lines(self.t_rex_run1_img,(255,0,0),1,self.t_rex_run1_mask.outline())
                 self.t_rex_state = 'run1'
 
             else:
                 self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run2_img.get_height()))
                 self.screen.blit(self.t_rex_run2_img, self.t_rex_loc)
+                pg.draw.lines(self.t_rex_run2_img,(255,0,0),1,self.t_rex_run2_mask.outline())
                 self.t_rex_state = 'run2'
 
             if self.state_gauge >= 5:
@@ -240,6 +247,8 @@ class T_Rex_Runner:
                 self.state_gauge += 1
 
             self.make_obstacles()
+
+            #pg.draw.rect(self.screen, (255,0,0), list(self.t_rex_loc)+list(self.t_rex_over.get_rect()[2:]))
 
 
         else:
