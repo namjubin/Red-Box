@@ -1,3 +1,4 @@
+"""
 import cv2 as cv
 import numpy as np
 
@@ -14,3 +15,6 @@ for i in range(2):
                 img[y,x]=[0,0,0,0]
 
     cv.imwrite('ptera_'+str(i+1)+'.png',img)
+"""
+
+print('\a')
