@@ -178,7 +178,7 @@ class T_Rex_Runner:
 
         if 0 < len(self.obstacle) and not self.collision:
             #pg.draw.rect(self.screen, (255,0,0), self.obstacle[0][1]+list(self.obstacles[self.obstacle[0][0]].get_rect())[2:])
-            pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
+            #pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
             self.collide()
 
         if self.collision:
@@ -224,19 +224,19 @@ class T_Rex_Runner:
             if self.jump:
                 self.t_rex_loc = (self.main_rect[0]*2,(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_stop_img.get_height()+self.weight)
                 self.screen.blit(self.t_rex_stop_img, self.t_rex_loc)
-                pg.draw.lines(self.t_rex_stop_img,(255,0,0),1,self.t_rex_stop_mask.outline())
+                #pg.draw.lines(self.t_rex_stop_img,(255,0,0),1,self.t_rex_stop_mask.outline())
                 self.t_rex_state = 'stop'
 
             elif self.state:
                 self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run1_img.get_height()))
                 self.screen.blit(self.t_rex_run1_img, self.t_rex_loc)
-                pg.draw.lines(self.t_rex_run1_img,(255,0,0),1,self.t_rex_run1_mask.outline())
+                #pg.draw.lines(self.t_rex_run1_img,(255,0,0),1,self.t_rex_run1_mask.outline())
                 self.t_rex_state = 'run1'
 
             else:
                 self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run2_img.get_height()))
                 self.screen.blit(self.t_rex_run2_img, self.t_rex_loc)
-                pg.draw.lines(self.t_rex_run2_img,(255,0,0),1,self.t_rex_run2_mask.outline())
+                #pg.draw.lines(self.t_rex_run2_img,(255,0,0),1,self.t_rex_run2_mask.outline())
                 self.t_rex_state = 'run2'
 
             if self.state_gauge >= 5:
