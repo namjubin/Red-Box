@@ -146,12 +146,9 @@ class T_Rex_Runner:
             self.collision = True
             self.runing = False
 
-
-
     def draw_game(self):
         #pg.draw.rect(self.screen, (0,255,0), self.main_rect)
         #pg.draw.rect(self.screen, (255,0,0), self.floor_rect)
-        
 
         self.score_text = self.fontObj.render('%05d'%self.score, True, (80,80,80))
         self.score_text_rect = self.score_text.get_rect()
@@ -198,8 +195,6 @@ class T_Rex_Runner:
 
         elif self.runing:
             sub = 0
-
-            
 
             for i in range(len(self.obstacle)):
                 i -= sub
