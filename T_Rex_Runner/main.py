@@ -141,7 +141,7 @@ class T_Rex_Runner:
         x = self.t_rex_loc[0] - self.obstacle[0][1][0]
         y = self.t_rex_loc[1] - self.obstacle[0][1][1]
 
-        if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacles[self.obstacle[0][0]]), (x,y)):
+        if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacles[self.obstacle[0][0]]), (x,y)) and (x+self.t_rex_over.get_width()) >= 0:
             print('!')
             self.collision = True
             self.runing = False
