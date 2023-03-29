@@ -107,14 +107,14 @@ class T_Rex_Runner:
         self.state_gauge = 0.0
 
         if self.up:
-            self.weight -= self.gravity * 1.6
+            self.weight -= self.gravity * (1+self.main_rect[3]*0.002)
             self.gravity*=0.85
 
         elif self.down:
-            self.weight += self.gravity * 1.6
+            self.weight += self.gravity * (1+self.main_rect[3]*0.002)
             self.gravity*=1.15
 
-        if int(self.gravity) <= 0 and self.up:
+        if int(self.gravity) <= self.main_rect[3]*0.002 and self.up:
             self.up = False
             self.down = True
         
