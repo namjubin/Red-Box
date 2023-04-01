@@ -1,21 +1,20 @@
-import pygame as pg
 import ctypes
-from T_Rex_Runner.main import *
+import pygame as pg
+from T_Rex_Runner.main import T_Rex_Runner
 
-#pygame 초기화
+# pygame 초기화
 pg.init()
 
-#전체 화면
-full_screen = False   
+# 전체 화면
+FULLSCREEN = False
 
-if full_screen:
-    u32 = ctypes.windll.user32
-    size = u32.GetSystemMetrics(0), u32.GetSystemMetrics(1)
+if FULLSCREEN:
+    size = (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))
     screen = pg.display.set_mode(size, pg.FULLSCREEN)
-
 else:
-    size = (800, 600)
-    screen = pg.display.set_mode(size)
+    screen_size = (800, 600)
+    screen = pg.display.set_mode(screen_size)
 
+# T-Rex Runner 게임 실행
 t_rex = T_Rex_Runner(screen)
-t_rex.start()  
+t_rex.start()
