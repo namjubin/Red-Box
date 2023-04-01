@@ -13,7 +13,6 @@ class T_Rex_Runner:
         self.state = True
         self.state_gauge = 0.0
         self.floor_speed = 0
-        self.floor_mph = 100
         self.speed = 0
         self.jump = False
         self.up = False
@@ -141,7 +140,6 @@ class T_Rex_Runner:
         y = self.obstacle[0][1][1] - self.t_rex_loc[1]
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacles[self.obstacle[0][0]]), (x,y)):
-            print('!')
             self.collision = True
             self.runing = False
 
@@ -149,7 +147,7 @@ class T_Rex_Runner:
         #pg.draw.rect(self.screen, (0,255,0), self.main_rect)
         #pg.draw.rect(self.screen, (255,0,0), self.floor_rect)
 
-        if 0 < len(self.obstacle) and not self.collision:
+        if 0 < len(self.obstacle) and not self.collision and self.obstacle[0][1][0]-self.t_rex_loc[0]-self.t_rex_over.get_width()<=0 and self.obstacle[0][1][0]+self.obstacles[self.obstacle[0][0]].get_width()>=self.t_rex_loc[0]:
             #pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
             self.collide()
 
@@ -192,12 +190,6 @@ class T_Rex_Runner:
             self.screen.blit(self.t_rex_over, self.t_rex_loc)
 
         elif self.runing:
-            self.set_speed(int(self.floor_mph))
-            self.score += 20/self.floor_mph
-
-            if self.floor_mph >= 2:
-                self.floor_mph *= 0.9999
-
             sub = 0
 
             for i in range(len(self.obstacle)):
@@ -260,6 +252,7 @@ class T_Rex_Runner:
         self.speed = self.size[0]//value
 
     def start(self):
+        speed = 100
 
         while self.run:
             self.screen.fill((255, 255, 255))
@@ -280,6 +273,13 @@ class T_Rex_Runner:
             
             if not self.jump and self.jump_start and not self.collision:
                 self.runing = True
+
+            if self.runing:
+                self.set_speed(int(speed))
+                self.score += 20/speed
+
+                if speed >= 2:
+                    speed *= 0.9999
 
             self.draw_game()
 
