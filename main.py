@@ -6,7 +6,7 @@ from T_Rex_Runner.main import *
 pg.init()
 
 #전체 화면
-full_screen = False
+full_screen = False   
 
 if full_screen:
     u32 = ctypes.windll.user32

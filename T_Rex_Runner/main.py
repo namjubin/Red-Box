@@ -1,7 +1,5 @@
 import pygame as pg
 from random import *
-import cv2 as cv
-
 
 class T_Rex_Runner:
     def __init__(self, screen, fps=60):
@@ -15,6 +13,7 @@ class T_Rex_Runner:
         self.state = True
         self.state_gauge = 0.0
         self.floor_speed = 0
+        self.floor_mph = 100
         self.speed = 0
         self.jump = False
         self.up = False
@@ -138,10 +137,10 @@ class T_Rex_Runner:
                 self.obstacle.append([obstacle,[self.main_rect[0]+self.main_rect[2],(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.obstacles[obstacle].get_height()]])
 
     def collide(self):
-        x = self.t_rex_loc[0] - self.obstacle[0][1][0]
-        y = self.t_rex_loc[1] - self.obstacle[0][1][1]
+        x = self.obstacle[0][1][0] - self.t_rex_loc[0]
+        y = self.obstacle[0][1][1] - self.t_rex_loc[1]
 
-        if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacles[self.obstacle[0][0]]), (x,y)) and (x+self.t_rex_over.get_width()) >= 0:
+        if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacles[self.obstacle[0][0]]), (x,y)):
             print('!')
             self.collision = True
             self.runing = False
@@ -149,6 +148,10 @@ class T_Rex_Runner:
     def draw_game(self):
         #pg.draw.rect(self.screen, (0,255,0), self.main_rect)
         #pg.draw.rect(self.screen, (255,0,0), self.floor_rect)
+
+        if 0 < len(self.obstacle) and not self.collision:
+            #pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
+            self.collide()
 
         self.score_text = self.fontObj.render('%05d'%self.score, True, (80,80,80))
         self.score_text_rect = self.score_text.get_rect()
@@ -173,11 +176,6 @@ class T_Rex_Runner:
         if self.jump:
                 self.jump_func()
 
-        if 0 < len(self.obstacle) and not self.collision:
-            #pg.draw.rect(self.screen, (255,0,0), self.obstacle[0][1]+list(self.obstacles[self.obstacle[0][0]].get_rect())[2:])
-            #pg.draw.lines(self.obstacles[self.obstacle[0][0]],(255,0,0),1,self.obstacles_mask[self.obstacle[0][0]].outline())
-            self.collide()
-
         if self.collision:
             for i in range(len(self.obstacle)):
                 if self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacles[self.obstacle[i][0]].get_width():
@@ -194,10 +192,17 @@ class T_Rex_Runner:
             self.screen.blit(self.t_rex_over, self.t_rex_loc)
 
         elif self.runing:
+            self.set_speed(int(self.floor_mph))
+            self.score += 20/self.floor_mph
+
+            if self.floor_mph >= 2:
+                self.floor_mph *= 0.9999
+
             sub = 0
 
             for i in range(len(self.obstacle)):
                 i -= sub
+                self.obstacle[i][1][0] -= self.speed
                 if self.obstacle[i][1][0] + self.obstacles[self.obstacle[i][0]].get_width() <= self.main_rect[0]:
                     sub +=1
                     self.obstacle.pop(i)
@@ -213,8 +218,9 @@ class T_Rex_Runner:
 
                 else:
                     self.screen.blit( self.obstacles[self.obstacle[i][0]], self.obstacle[i][1])
+
+                #pg.draw.rect(self.screen, (255,0,0), self.obstacle[0][1]+list(self.obstacles[self.obstacle[0][0]].get_rect())[2:])
                 
-                self.obstacle[i][1][0] -= self.speed
 
             if self.jump:
                 self.t_rex_loc = (self.main_rect[0]*2,(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_stop_img.get_height()+self.weight)
@@ -254,7 +260,6 @@ class T_Rex_Runner:
         self.speed = self.size[0]//value
 
     def start(self):
-        floor_speed = 100
 
         while self.run:
             self.screen.fill((255, 255, 255))
@@ -277,14 +282,6 @@ class T_Rex_Runner:
                 self.runing = True
 
             self.draw_game()
-
-            if self.runing:
-                self.set_speed(int(floor_speed))
-                self.score += 20/floor_speed
-
-                if floor_speed >= 2:
-                    floor_speed *= 0.9999
-
 
             pg.display.flip()
             self.fpsClock.tick(self.fps)
