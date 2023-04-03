@@ -8,29 +8,7 @@ class T_Rex_Runner:
         self.size = pg.display.get_surface().get_size()
         self.fpsClock = pg.time.Clock()
         self.run = True
-        self.jump_start = False
-        self.runing = False
-        self.state = True
-        self.state_gauge = 0.0
-        self.floor_speed = 0
-        self.speed = 0
-        self.jump = False
-        self.up = False
-        self.down = False
-        self.score = 0
-        self.obstacle_gauge = 0
-        self.obstacle_taget = 100
-        self.obstacle = []
-        self.t_rex_loc = ()
-        self.collision = False
 
-        f = open('T_Rex_Runner/high_score.txt')
-        self.high_score = int(f.readline())
-        f.close()
-
-        self.setting()
-
-    def setting(self):
         ratio = self.size[0]/10
 
         self.main_rect = (ratio/2, (self.size[1]-((ratio*9/4)))/5*2, ratio*9, ratio*9/4)
@@ -61,15 +39,41 @@ class T_Rex_Runner:
                           'cacti_big_1' : self.cacti_big_1, 
                           'cacti_big_2' : self.cacti_big_2, 
                           'cacti_big_3' : self.cacti_big_3, 
-                          'ptera' : [self.ptera_1, self.ptera_2]
+                          'ptera' : self.ptera_1
                          }
         
-        self.t_rex_over_mask = pg.mask.from_surface(self.t_rex_over)
+        self.game_over = self.get_img('T_Rex_Runner/T-Rex_image/game_over.png')
+        self.replay_button = self.get_img('T_Rex_Runner/T-Rex_image/replay_button.png')
         
+        self.t_rex_over_mask = pg.mask.from_surface(self.t_rex_over)
+
+        self.fontObj = pg.font.Font('T_Rex_Runner/font/PressStart2P-Regular.ttf', int(self.main_rect[2]/50))
+
+        self.setting()
+
+    def setting(self):
+        self.jump_start = False
+        self.runing = False
+        self.state = True
+        self.state_gauge = 0.0
+        self.floor_speed = 0
+        self.speed = 0
+        self.jump = False
+        self.up = False
+        self.down = False
+        self.score = 0
+        self.obstacle_gauge = 0
+        self.obstacle_taget = 100
+        self.obstacle = []
+        self.t_rex_loc = []
+        self.collision = False
         self.gravity = self.main_rect[3]/20
         self.weight = 0
 
-        self.fontObj = pg.font.Font('T_Rex_Runner/font/PressStart2P-Regular.ttf', int(self.main_rect[2]/50))
+        f = open('T_Rex_Runner/high_score.txt')
+        self.high_score = int(f.readline())
+        f.close()
+
 
     def get_img(self, img):
         img = pg.image.load(img).convert_alpha()
@@ -81,14 +85,14 @@ class T_Rex_Runner:
         self.state_gauge = 0.0
 
         if self.up:
-            self.weight -= self.gravity * (1+self.main_rect[3]*0.002)
+            self.weight -= self.gravity * 1.6
             self.gravity*=0.85
 
         elif self.down:
-            self.weight += self.gravity * (1+self.main_rect[3]*0.002)
+            self.weight += self.gravity * 1.6
             self.gravity*=1.15
 
-        if int(self.gravity) <= self.main_rect[3]*0.002 and self.up:
+        if int(self.gravity) <= 0 and self.up:
             self.up = False
             self.down = True
         
@@ -106,7 +110,16 @@ class T_Rex_Runner:
             self.obstacle_taget = randint(40,71)
             obstacle = choice(list(self.obstacles.keys()))
             if obstacle == 'ptera':
-                pass
+                ptera_loc = randint(0,3)
+
+                if ptera_loc == 0:
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.2],0,True])
+
+                elif ptera_loc == 1:
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.5],0, True])
+
+                else:
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.6],0, True])
 
             else:
                 self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.obstacles[obstacle].get_height()]])
@@ -116,6 +129,10 @@ class T_Rex_Runner:
         y = self.obstacle[0][1][1] - self.t_rex_loc[1]
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacle[0][0]), (x,y)):
+            f = open('T_Rex_Runner/high_score.txt', 'w')
+            f.write(str(int(self.score)))
+            f.close()
+
             self.collision = True
             self.runing = False
 
@@ -149,17 +166,20 @@ class T_Rex_Runner:
         if self.collision:
             for i in range(len(self.obstacle)):
                 if self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacle[i][0].get_width():
-                    obstacle_surface =  self.obstacles[self.obstacle[i][0]].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacle[i][0].get_height()))
+                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacle[i][0].get_height()))
                     self.screen.blit(obstacle_surface, self.obstacle[i][1])
 
                 elif self.obstacle[i][1][0] < self.main_rect[0]:
-                    obstacle_surface =  self.obstacles[self.obstacle[i][0]].subsurface(pg.Rect(self.main_rect[0]-self.obstacle[i][1][0],0, self.obstacle[i][0].get_width()-(self.main_rect[0]-self.obstacle[i][1][0]), self.obstacle[i][0].get_height()))
+                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(self.main_rect[0]-self.obstacle[i][1][0],0, self.obstacle[i][0].get_width()-(self.main_rect[0]-self.obstacle[i][1][0]), self.obstacle[i][0].get_height()))
                     self.screen.blit(obstacle_surface, (self.main_rect[0],self.obstacle[i][1][1]))
 
                 else:
                     self.screen.blit(self.obstacle[i][0], self.obstacle[i][1])
 
             self.screen.blit(self.t_rex_over, self.t_rex_loc)
+
+            self.screen.blit(self.game_over, [(self.main_rect[0]+self.main_rect[2]/2)-self.game_over.get_width()/2, self.main_rect[1]+self.main_rect[3]*0.3])
+            self.screen.blit(self.replay_button, [(self.main_rect[0]+self.main_rect[2]/2)-self.replay_button.get_width()/2, self.main_rect[1]+self.main_rect[3]*0.5])
 
         elif self.runing:
             sub = 0
@@ -182,6 +202,19 @@ class T_Rex_Runner:
 
                 else:
                     self.screen.blit(self.obstacle[i][0], self.obstacle[i][1])
+
+                if len(self.obstacle[i]) >= 3:
+                    if self.obstacle[i][2] >= 15:
+                        self.obstacle[i][2] = 0
+                        self.obstacle[i][3] = not self.obstacle[i][3]
+
+                        if self.obstacle[i][3]:
+                            self.obstacle[i][0] = self.ptera_2
+                        else:
+                            self.obstacle[i][0] = self.ptera_1 
+                    
+                    else:
+                        self.obstacle[i][2] += 1
                 
 
             if self.jump:
@@ -231,6 +264,11 @@ class T_Rex_Runner:
                             self.jump_start = True
                             self.jump = True
                             self.up = True
+
+                        if self.collision:
+                            self.runing = True
+                            self.collision = False
+                            self.setting()
             
             if not self.jump and self.jump_start and not self.collision:
                 self.runing = True
