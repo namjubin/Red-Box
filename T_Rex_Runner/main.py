@@ -1,5 +1,6 @@
 import pygame as pg
 from random import *
+import os
 
 class T_Rex_Runner:
     def __init__(self, screen, fps=60):
@@ -13,25 +14,27 @@ class T_Rex_Runner:
 
         self.main_rect = (ratio/2, (self.size[1]-((ratio*9/4)))/5*2, ratio*9, ratio*9/4)
 
+        self.image_loc = os.getcwd()+'/'
+
         self.floor_img = pg.image.load('T_Rex_Runner/T-Rex_image/test.png').convert_alpha()
         self.floor_img = pg.transform.scale(self.floor_img,(self.floor_img.get_width()*(self.main_rect[3]/180),self.floor_img.get_height()*(self.main_rect[3]/180)))
         self.floor_rect = (self.main_rect[0], self.main_rect[3]+self.main_rect[1]-self.floor_img.get_height()*2, self.main_rect[2], self.floor_img.get_height())
         
-        self.t_rex_stop_img = self.get_img('T_Rex_Runner\T-Rex_image\T-Rex_stop.png')
-        self.t_rex_run1_img = self.get_img('T_Rex_Runner\T-Rex_image\T-Rex_run1.png')
-        self.t_rex_run2_img = self.get_img('T_Rex_Runner\T-Rex_image\T-Rex_run2.png')
-        self.t_rex_over = self.get_img('T_Rex_Runner\T-Rex_image\T-Rex_over.png')
+        self.t_rex_stop_img = self.get_img('T-Rex_stop.png')
+        self.t_rex_run1_img = self.get_img('T-Rex_run1.png')
+        self.t_rex_run2_img = self.get_img('T-Rex_run2.png')
+        self.t_rex_over = self.get_img('T-Rex_over.png')
 
-        self.cacti_small_1 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_small_1.png')
-        self.cacti_small_2 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_small_2.png')
-        self.cacti_small_3 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_small_3.png')
+        self.cacti_small_1 = self.get_img('cacti_small_1.png')
+        self.cacti_small_2 = self.get_img('cacti_small_2.png')
+        self.cacti_small_3 = self.get_img('cacti_small_3.png')
 
-        self.cacti_big_1 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_big_1.png')
-        self.cacti_big_2 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_big_2.png')
-        self.cacti_big_3 = self.get_img('T_Rex_Runner\T-Rex_image\cacti_big_3.png')
+        self.cacti_big_1 = self.get_img('cacti_big_1.png')
+        self.cacti_big_2 = self.get_img('cacti_big_2.png')
+        self.cacti_big_3 = self.get_img('cacti_big_3.png')
 
-        self.ptera_1 = self.get_img('T_Rex_Runner\T-Rex_image\ptera_1.png')
-        self.ptera_2 = self.get_img('T_Rex_Runner\T-Rex_image\ptera_2.png')
+        self.ptera_1 = self.get_img('ptera_1.png')
+        self.ptera_2 = self.get_img('ptera_2.png')
 
         self.obstacles = {'cacti_small_1' : self.cacti_small_1, 
                           'cacti_small_2' : self.cacti_small_2, 
@@ -42,12 +45,12 @@ class T_Rex_Runner:
                           'ptera' : self.ptera_1
                          }
         
-        self.game_over = self.get_img('T_Rex_Runner/T-Rex_image/game_over.png')
-        self.replay_button = self.get_img('T_Rex_Runner/T-Rex_image/replay_button.png')
+        self.game_over = self.get_img('game_over.png')
+        self.replay_button = self.get_img('replay_button.png')
         
         self.t_rex_over_mask = pg.mask.from_surface(self.t_rex_over)
 
-        self.fontObj = pg.font.Font('T_Rex_Runner/font/PressStart2P-Regular.ttf', int(self.main_rect[2]/50))
+        self.fontObj = pg.font.Font(self.image_loc+'T_Rex_Runner/font/PressStart2P-Regular.ttf', int(self.main_rect[2]/50))
 
         self.setting()
 
@@ -70,13 +73,13 @@ class T_Rex_Runner:
         self.gravity = self.main_rect[3]/20
         self.weight = 0
 
-        f = open('T_Rex_Runner/high_score.txt')
+        f = open(self.image_loc+'T_Rex_Runner/high_score.txt')
         self.high_score = int(f.readline())
         f.close()
 
 
     def get_img(self, img):
-        img = pg.image.load(img).convert_alpha()
+        img = pg.image.load(self.image_loc+'T_Rex_Runner/T-Rex_image/'+img).convert_alpha()
         img = pg.transform.scale(img,(img.get_width()*(self.main_rect[3]/350),img.get_height()*(self.main_rect[3]/350)))
         return img
 
@@ -129,7 +132,7 @@ class T_Rex_Runner:
         y = self.obstacle[0][1][1] - self.t_rex_loc[1]
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacle[0][0]), (x,y)):
-            f = open('T_Rex_Runner/high_score.txt', 'w')
+            f = open(self.image_loc+'T_Rex_Runner/high_score.txt', 'w')
             f.write(str(int(self.score)))
             f.close()
 

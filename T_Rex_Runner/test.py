@@ -1,7 +1,7 @@
+'''
 import cv2 as cv
 import numpy as np
 
-'''
 for i in range(3):
     img = cv.imread('T_Rex_Runner\T-Rex_image\cacti_small_'+str(i+1)+'.png', cv.IMREAD_UNCHANGED)
     for y in range(len(img)):
@@ -15,7 +15,6 @@ for i in range(3):
                 img[y,x]=[0,0,0,0]
 
     cv.imwrite('T_Rex_Runner\T-Rex_image\cacti_small_'+str(i+1)+'.png',img)
-'''
 
 img = cv.imread('T_Rex_Runner/T-Rex_image/replay_button.png', cv.IMREAD_UNCHANGED)
 for y in range(len(img)):
@@ -29,3 +28,8 @@ for y in range(len(img)):
             img[y,x]=[0,0,0,0]
 
 cv.imwrite('T_Rex_Runner/T-Rex_image/replay_button.png',img)
+'''
+
+import os
+
+print(os.getcwd())
