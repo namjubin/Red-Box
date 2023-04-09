@@ -1,5 +1,5 @@
 import qrcode
 
-text = 'tetris'
+text = 'T-rex_run'
 QR = qrcode.make(text)
 QR.save(text+'.png')
