@@ -6,7 +6,7 @@ from T_Rex_Runner.main import T_Rex_Runner
 pg.init()
 
 # 전체 화면
-FULLSCREEN = False
+FULLSCREEN = True
 
 if FULLSCREEN:
     size = (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))

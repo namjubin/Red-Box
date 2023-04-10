@@ -6,13 +6,17 @@ class T_Rex_Runner:
     def __init__(self, screen, fps=60):
         self.screen = screen
         self.fps = fps
-        #self.size = pg.display.get_surface().get_size()
+        self.screen_size = pg.display.get_surface().get_size()
         self.size = (800,600)
         self.fpsClock = pg.time.Clock()
         self.run = True
         
         self.main_rect = (0, 0, 720, 180)
         self.main_surface = pg.Surface(self.main_rect[2:])
+
+        x = int(self.screen_size[0] / 10) * 9
+        y = int(x/4)
+        self.show_rect = (int(self.screen_size[0]/2-x/2),int(self.screen_size[1]/2-y/2),x,y)
 
         self.image_loc = os.getcwd()+'/'
 
@@ -50,8 +54,7 @@ class T_Rex_Runner:
         
         self.t_rex_over_mask = pg.mask.from_surface(self.t_rex_over)
 
-        self.fontObj = pg.font.Font(self.image_loc+'T_Rex_Runner/font/PressStart2P-Regular.ttf', int(self.main_rect[2]/50))
-
+        self.fontObj = pg.font.Font(self.image_loc+'T_Rex_Runner/font/PressStart2P-Regular.ttf', 14)
         self.setting()
 
     def setting(self):
@@ -70,7 +73,7 @@ class T_Rex_Runner:
         self.obstacle = []
         self.t_rex_loc = []
         self.collision = False
-        self.gravity = self.main_rect[3]/20
+        self.gravity = 9
         self.weight = 0
 
         f = open(self.image_loc+'T_Rex_Runner/high_score.txt')
@@ -80,7 +83,7 @@ class T_Rex_Runner:
 
     def get_img(self, img):
         img = pg.image.load(self.image_loc+'T_Rex_Runner/T-Rex_image/'+img).convert_alpha()
-        img = pg.transform.scale(img,(img.get_width()*(self.main_rect[3]/350),img.get_height()*(self.main_rect[3]/350)))
+        img = pg.transform.scale(img,(int(img.get_width()*(self.main_rect[3]/350)),int(img.get_height()*(self.main_rect[3]/350))))
         return img
 
     def jump_func(self):
@@ -101,7 +104,7 @@ class T_Rex_Runner:
         
         elif self.weight >= 0 and self.down:
             self.weight = 0
-            self.gravity = self.main_rect[3]/20
+            self.gravity = 9
             self.up = False
             self.down = False
             self.jump = False
@@ -132,9 +135,10 @@ class T_Rex_Runner:
         y = self.obstacle[0][1][1] - self.t_rex_loc[1]
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacle[0][0]), (x,y)):
-            f = open(self.image_loc+'T_Rex_Runner/high_score.txt', 'w')
-            f.write(str(int(self.score)))
-            f.close()
+            if self.high_score < self.score:
+                f = open(self.image_loc+'T_Rex_Runner/high_score.txt', 'w')
+                f.write(str(int(self.score)))
+                f.close()
 
             self.collision = True
             self.runing = False
@@ -154,14 +158,11 @@ class T_Rex_Runner:
         self.main_surface.blit(self.high_score_text, self.high_score_text_rect)
         
         if self.floor_speed+self.floor_rect[2]<=self.floor_img.get_width():
-            self.floor_surface = self.floor_img.subsurface(pg.Rect(self.floor_speed,0,self.floor_rect[2],self.floor_img.get_height()))
-            self.main_surface.blit(self.floor_surface, (self.floor_rect[0:2]))
+            self.main_surface.blit(self.floor_img, (0-self.floor_speed,self.floor_rect[1]))
         
         else:
-            self.floor_surface = self.floor_img.subsurface(pg.Rect(self.floor_speed,0,self.floor_img.get_width()-self.floor_speed,self.floor_img.get_height()))
-            self.main_surface.blit(self.floor_surface, (self.floor_rect[0:2]))
-            self.floor_surface = self.floor_img.subsurface(pg.Rect(0,0,self.floor_rect[2]-self.floor_surface.get_width(),self.floor_img.get_height()))
-            self.main_surface.blit(self.floor_surface, (self.floor_img.get_width()-self.floor_speed+self.floor_rect[0],self.floor_rect[1]))
+            self.main_surface.blit(self.floor_img, (0-self.floor_speed,self.floor_rect[1]))
+            self.main_surface.blit(self.floor_img, (0-self.floor_speed+self.floor_img.get_width(),self.floor_rect[1]))
 
         if self.jump:
                 self.jump_func()
@@ -194,14 +195,6 @@ class T_Rex_Runner:
                     sub +=1
                     self.obstacle.pop(i)
                     continue
-
-                elif self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacle[i][0].get_width():
-                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, self.obstacle[i][1])
-
-                elif self.obstacle[i][1][0] < self.main_rect[0]:
-                    obstacle_surface = self.obstacle[i][0].subsurface(pg.Rect(self.main_rect[0]-self.obstacle[i][1][0],0, self.obstacle[i][0].get_width()-(self.main_rect[0]-self.obstacle[i][1][0]), self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, (self.main_rect[0],self.obstacle[i][1][1]))
 
                 else:
                     self.main_surface.blit(self.obstacle[i][0], self.obstacle[i][1])
@@ -286,7 +279,7 @@ class T_Rex_Runner:
                     speed *= 0.9999
 
             self.draw_game()
-            self.screen.blit(pg.transform.scale(self.main_surface, (800, 600)), (0,0))
+            self.screen.blit(pg.transform.scale(self.main_surface, self.show_rect[2:]), self.show_rect[:2])
 
             pg.display.flip()
             self.fpsClock.tick(self.fps)
