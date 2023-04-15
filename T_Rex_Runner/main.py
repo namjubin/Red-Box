@@ -71,7 +71,7 @@ class T_Rex_Runner:
         self.obstacle_gauge = 0
         self.obstacle_taget = 100
         self.obstacle = []
-        self.t_rex_loc = []
+        self.t_rex_loc = [15, 110]
         self.collision = False
         self.gravity = 9
         self.weight = 0
@@ -147,7 +147,7 @@ class T_Rex_Runner:
         if 0 < len(self.obstacle) and not self.collision and self.obstacle[0][1][0]-self.t_rex_loc[0]-self.t_rex_over.get_width()<=0 and self.obstacle[0][1][0]+self.obstacle[0][0].get_width()>=self.t_rex_loc[0]:
             self.collide()
 
-        self.score_text = self.fontObj.render('%05d'%self.score, True, (80,80,80))
+        self.score_text = self.fontObj.render('%05d'%self.score, False, (80,80,80))
         self.score_text_rect = self.score_text.get_rect()
         self.score_text_rect[0], self.score_text_rect[1] = (self.main_rect[0]+self.main_rect[2])-self.score_text_rect[2], self.main_rect[1]
         self.main_surface.blit(self.score_text, self.score_text_rect)
@@ -214,15 +214,13 @@ class T_Rex_Runner:
                 
 
             if self.jump:
-                self.t_rex_loc = (self.main_rect[0]*2,(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_stop_img.get_height()+self.weight)
+                self.t_rex_loc = [15, 110+self.weight]
                 self.main_surface.blit(self.t_rex_stop_img, self.t_rex_loc)
 
             elif self.state:
-                self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run1_img.get_height()))
                 self.main_surface.blit(self.t_rex_run1_img, self.t_rex_loc)
 
             else:
-                self.t_rex_loc = (self.main_rect[0]*2,((self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_run2_img.get_height()))
                 self.main_surface.blit(self.t_rex_run2_img, self.t_rex_loc)
 
             if self.state_gauge >= 5:
@@ -235,7 +233,8 @@ class T_Rex_Runner:
             self.make_obstacles()
 
         else:
-            self.main_surface.blit(self.t_rex_stop_img, (self.main_rect[0]*2,(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.t_rex_stop_img.get_height()+self.weight))
+            self.t_rex_loc = [15, 110+self.weight]
+            self.main_surface.blit(self.t_rex_stop_img, self.t_rex_loc)
 
     def set_speed(self, value):
         self.floor_speed = (self.floor_speed+self.size[0]//value)%self.floor_img.get_width()
