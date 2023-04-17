@@ -234,7 +234,6 @@ class T_Rex_Runner:
         self.speed = self.size[0]//value
 
     def start(self):
-        speed = 100
 
         while self.run:
             self.main_surface.fill((255, 255, 255))
@@ -261,6 +260,7 @@ class T_Rex_Runner:
                             self.setting()
             
             if not self.jump and self.jump_start and not self.collision:
+                speed = 100
                 self.runing = True
 
             if self.runing:
