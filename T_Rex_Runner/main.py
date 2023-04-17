@@ -87,27 +87,29 @@ class T_Rex_Runner:
         return img
 
     def jump_func(self):
-        self.state = True
-        self.state_gauge = 0.0
+        if not self.collision:
+            self.state = True
+            self.state_gauge = 0.0
 
-        if self.up:
-            self.weight -= self.gravity * 1.6
-            self.gravity*=0.85
+            if self.up:
+                self.weight -= self.gravity * 1.6
+                self.gravity*=0.85
 
-        elif self.down:
-            self.weight += self.gravity * 1.6
-            self.gravity*=1.15
+            elif self.down:
+                self.weight += self.gravity * 1.6
+                self.gravity*=1.15
 
-        if int(self.gravity) <= 0 and self.up:
-            self.up = False
-            self.down = True
-        
-        elif self.weight >= 0 and self.down:
-            self.weight = 0
-            self.gravity = 9
-            self.up = False
-            self.down = False
-            self.jump = False
+            if int(self.gravity) <= 0 and self.up:
+                self.up = False
+                self.down = True
+            
+            elif self.weight >= 0 and self.down:
+                self.t_rex_loc[1] = 110
+                self.weight = 0
+                self.gravity = 9
+                self.up = False
+                self.down = False
+                self.jump = False
 
     def make_obstacles(self):
         self.obstacle_gauge += 1
@@ -169,16 +171,7 @@ class T_Rex_Runner:
 
         if self.collision:
             for i in range(len(self.obstacle)):
-                if self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacle[i][0].get_width():
-                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, self.obstacle[i][1])
-
-                elif self.obstacle[i][1][0] < self.main_rect[0]:
-                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(self.main_rect[0]-self.obstacle[i][1][0],0, self.obstacle[i][0].get_width()-(self.main_rect[0]-self.obstacle[i][1][0]), self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, (self.main_rect[0],self.obstacle[i][1][1]))
-
-                else:
-                    self.main_surface.blit(self.obstacle[i][0], self.obstacle[i][1])
+                self.main_surface.blit(self.obstacle[i][0], self.obstacle[i][1])
 
             self.main_surface.blit(self.t_rex_over, self.t_rex_loc)
 
@@ -214,7 +207,7 @@ class T_Rex_Runner:
                 
 
             if self.jump:
-                self.t_rex_loc = [15, 110+self.weight]
+                self.t_rex_loc = [15, int(110+self.weight)]
                 self.main_surface.blit(self.t_rex_stop_img, self.t_rex_loc)
 
             elif self.state:
