@@ -121,13 +121,13 @@ class T_Rex_Runner:
                 ptera_loc = randint(0,3)
 
                 if ptera_loc == 0:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.2],0,True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.2],0,False])
 
                 elif ptera_loc == 1:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.5],0, True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.5],0, False])
 
                 else:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.6],0, True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.6],0, False])
 
             else:
                 self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.obstacles[obstacle].get_height()]])
