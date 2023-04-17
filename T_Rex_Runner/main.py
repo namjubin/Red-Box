@@ -133,8 +133,8 @@ class T_Rex_Runner:
                 self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.obstacles[obstacle].get_height()]])
 
     def collide(self):
-        x = self.obstacle[0][1][0] - self.t_rex_loc[0]
-        y = self.obstacle[0][1][1] - self.t_rex_loc[1]
+        x = int(self.obstacle[0][1][0] - self.t_rex_loc[0])
+        y = int(self.obstacle[0][1][1] - self.t_rex_loc[1])
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacle[0][0]), (x,y)):
             if self.high_score < self.score:
