@@ -87,27 +87,29 @@ class T_Rex_Runner:
         return img
 
     def jump_func(self):
-        self.state = True
-        self.state_gauge = 0.0
+        if not self.collision:
+            self.state = True
+            self.state_gauge = 0.0
 
-        if self.up:
-            self.weight -= self.gravity * 1.6
-            self.gravity*=0.85
+            if self.up:
+                self.weight -= self.gravity * 1.6
+                self.gravity*=0.85
 
-        elif self.down:
-            self.weight += self.gravity * 1.6
-            self.gravity*=1.15
+            elif self.down:
+                self.weight += self.gravity * 1.6
+                self.gravity*=1.15
 
-        if int(self.gravity) <= 0 and self.up:
-            self.up = False
-            self.down = True
-        
-        elif self.weight >= 0 and self.down:
-            self.weight = 0
-            self.gravity = 9
-            self.up = False
-            self.down = False
-            self.jump = False
+            if int(self.gravity) <= 0 and self.up:
+                self.up = False
+                self.down = True
+            
+            elif self.weight >= 0 and self.down:
+                self.t_rex_loc[1] = 110
+                self.weight = 0
+                self.gravity = 9
+                self.up = False
+                self.down = False
+                self.jump = False
 
     def make_obstacles(self):
         self.obstacle_gauge += 1
@@ -119,20 +121,20 @@ class T_Rex_Runner:
                 ptera_loc = randint(0,3)
 
                 if ptera_loc == 0:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.2],0,True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.2],0,False])
 
                 elif ptera_loc == 1:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.5],0, True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.5],0, False])
 
                 else:
-                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.6],0, True])
+                    self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],self.main_rect[1]+self.main_rect[3]*0.6],0, False])
 
             else:
                 self.obstacle.append([self.obstacles[obstacle],[self.main_rect[0]+self.main_rect[2],(self.floor_rect[1]+self.floor_rect[3]*0.8)-self.obstacles[obstacle].get_height()]])
 
     def collide(self):
-        x = self.obstacle[0][1][0] - self.t_rex_loc[0]
-        y = self.obstacle[0][1][1] - self.t_rex_loc[1]
+        x = int(self.obstacle[0][1][0] - self.t_rex_loc[0])
+        y = int(self.obstacle[0][1][1] - self.t_rex_loc[1])
 
         if self.t_rex_over_mask.overlap(pg.mask.from_surface(self.obstacle[0][0]), (x,y)):
             if self.high_score < self.score:
@@ -169,16 +171,7 @@ class T_Rex_Runner:
 
         if self.collision:
             for i in range(len(self.obstacle)):
-                if self.obstacle[i][1][0] > self.main_rect[0]+self.main_rect[2]- self.obstacle[i][0].get_width():
-                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(0,0,(self.main_rect[0]+self.main_rect[2])-self.obstacle[i][1][0], self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, self.obstacle[i][1])
-
-                elif self.obstacle[i][1][0] < self.main_rect[0]:
-                    obstacle_surface =  self.obstacle[i][0].subsurface(pg.Rect(self.main_rect[0]-self.obstacle[i][1][0],0, self.obstacle[i][0].get_width()-(self.main_rect[0]-self.obstacle[i][1][0]), self.obstacle[i][0].get_height()))
-                    self.main_surface.blit(obstacle_surface, (self.main_rect[0],self.obstacle[i][1][1]))
-
-                else:
-                    self.main_surface.blit(self.obstacle[i][0], self.obstacle[i][1])
+                self.main_surface.blit(self.obstacle[i][0], self.obstacle[i][1])
 
             self.main_surface.blit(self.t_rex_over, self.t_rex_loc)
 
@@ -214,7 +207,7 @@ class T_Rex_Runner:
                 
 
             if self.jump:
-                self.t_rex_loc = [15, 110+self.weight]
+                self.t_rex_loc = [15, int(110+self.weight)]
                 self.main_surface.blit(self.t_rex_stop_img, self.t_rex_loc)
 
             elif self.state:
@@ -241,7 +234,6 @@ class T_Rex_Runner:
         self.speed = self.size[0]//value
 
     def start(self):
-        speed = 100
 
         while self.run:
             self.main_surface.fill((255, 255, 255))
@@ -268,6 +260,7 @@ class T_Rex_Runner:
                             self.setting()
             
             if not self.jump and self.jump_start and not self.collision:
+                speed = 100
                 self.runing = True
 
             if self.runing:

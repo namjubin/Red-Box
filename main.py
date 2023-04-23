@@ -1,4 +1,4 @@
-import ctypes
+from screeninfo import get_monitors
 import pygame as pg
 from T_Rex_Runner.main import T_Rex_Runner
 
@@ -9,7 +9,8 @@ pg.init()
 FULLSCREEN = True
 
 if FULLSCREEN:
-    size = (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))
+    for m in get_monitors():
+        size = (m.width, m.height)
     screen = pg.display.set_mode(size, pg.FULLSCREEN)
 else:
     screen_size = (800, 600)
