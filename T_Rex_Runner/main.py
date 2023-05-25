@@ -233,7 +233,7 @@ class T_Rex_Runner:
         self.floor_speed = (self.floor_speed+self.size[0]//value)%self.floor_img.get_width()
         self.speed = self.size[0]//value
 
-    def start(self):
+    def show(self):
 
         while self.run:
             self.main_surface.fill((255, 255, 255))
