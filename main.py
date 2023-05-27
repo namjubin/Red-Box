@@ -1,6 +1,6 @@
 from screeninfo import get_monitors
 import pygame as pg
-from Solitaire.main import Solitaire
+from main_menu.main import *
 
 # pygame 초기화
 pg.init()
@@ -16,4 +16,5 @@ else:
     screen_size = (800, 600)
     screen = pg.display.set_mode(screen_size)
 
-Solitaire.start(screen)
+main_menu = Main_menu(screen)
+main_menu.start()
