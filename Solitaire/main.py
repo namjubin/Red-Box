@@ -36,8 +36,8 @@ class Klondike:
 
 class Solitaire:
     def start(surface):
-        ace_of_spades = pg.image.load('Solitaire/card_img/ace_of_spades2.png')
-        card_back = pg.image.load('Solitaire/card_img/card_back.png')
+        ace_of_spades = pg.image.load('Solitaire/img/card/ace_spades.png')
+        card_back = pg.image.load('Solitaire/img/card/card_back.png')
         card = Card(surface, ace_of_spades, card_back)
         card.set_location(100,100)
         card.select(True)
