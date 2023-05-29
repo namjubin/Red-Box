@@ -1,7 +1,7 @@
 import pygame
 import math
 
-check_img = pygame.image.load('tool\widget\check.png')
+check_img = pygame.image.load('tool\\widget\\check.png')
 
 def fill(surface, color):
     w, h = surface.get_size()
