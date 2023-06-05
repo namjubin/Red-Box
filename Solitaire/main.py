@@ -2,10 +2,12 @@ import pygame as pg
 from random import shuffle
 
 class Card:
-    def __init__(self, surface, card_front, card_back):
+    def __init__(self, surface, card_front, card_back, sult, num):
         self.surface = surface
         self.card_front = card_front
         self.card_back = card_back
+        self.sult = sult
+        self.num = num
 
         self.setting()
 
@@ -36,11 +38,15 @@ class Klondike:
 
 class Solitaire:
     def start(surface):
-        ace_of_spades = pg.image.load('Solitaire/img/card/ace_spades.png')
+        sults = ['spades', 'diamonds', 'hearts', 'clubs']
+        nums = ['ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king']
+        dir = 'Solitaire/img/card/'
+        cards = []
         card_back = pg.image.load('Solitaire/img/card/card_back.png')
-        card = Card(surface, ace_of_spades, card_back)
-        card.set_location(100,100)
-        card.select(True)
+
+        for sult in sults:
+            for num in nums:
+                cards.append(Card(surface, pg.image.load(f'{dir}{num}_{sult}.png'), card_back, sult, num))
 
         clock = pg.time.Clock()
         run = True
@@ -56,11 +62,9 @@ class Solitaire:
                     if event.key == pg.K_ESCAPE:
                         run = False
                     if event.key == pg.K_SPACE:
-                        card.open = not card.open
+                        pass
                 
             keys = pg.key.get_pressed()
-
-            card.show()
 
 
             pg.display.flip()
