@@ -56,7 +56,7 @@ class Solitaire:
         self.hearts_slot = pg.transform.scale(self.hearts_slot, (70, 100))
         self.clubs_slot = pg.transform.scale(self.clubs_slot, (70, 100))
 
-        self.card_location = [(50, 120), (100, 120), (150, 120), (200, 120), (250, 120), (300, 120), (350, 120)]
+        self.card_location = [(95, 120), (185, 120), (275, 120), (365, 120), (455, 120), (545, 120), (635, 120)]
 
         for sult in sults:
             for num in nums:
