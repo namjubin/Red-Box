@@ -42,7 +42,8 @@ class Solitaire:
         nums = ['ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king']
         dir = 'Solitaire/img/card/'
         cards = []
-        card_back = pg.image.load('Solitaire/img/card/card_back.png')
+        card_back = pg.image.load(dir+'card_back.png')
+        empty_slot = pg.image.load(dir+'empty_slot.png')
 
         for sult in sults:
             for num in nums:
