@@ -56,7 +56,10 @@ class Solitaire:
         self.hearts_slot = pg.transform.scale(self.hearts_slot, (70, 100))
         self.clubs_slot = pg.transform.scale(self.clubs_slot, (70, 100))
 
-        self.card_location = [(95, 120), (185, 120), (275, 120), (365, 120), (455, 120), (545, 120), (635, 120)]
+        self.card_location = [(95, 140), (185, 140), (275, 140), (365, 140), (455, 140), (545, 140), (635, 140)]
+        self.home_location = [(365, 20), (455, 20), (545, 20), (635, 20)]
+        self.deck_location = (95, 20)
+
 
         for sult in sults:
             for num in nums:
@@ -69,6 +72,10 @@ class Solitaire:
         while run:
             if reset:
                 cards = self.cards
+                shuffle(cards)
+
+                for i in cards:
+                    print(i.sult, i.num)
                 reset = False
 
             self.surface.fill((50, 201, 76))
@@ -91,10 +98,10 @@ class Solitaire:
             clock.tick(60)
 
     def draw_board(self):
-        self.surface.blit(self.empty_slot, self.card_location[0])
-        self.surface.blit(self.empty_slot, self.card_location[1])
-        self.surface.blit(self.empty_slot, self.card_location[2])
-        self.surface.blit(self.empty_slot, self.card_location[3])
-        self.surface.blit(self.empty_slot, self.card_location[4])
-        self.surface.blit(self.empty_slot, self.card_location[5])
-        self.surface.blit(self.empty_slot, self.card_location[6])
+        for loc in self.card_location:
+            self.surface.blit(self.empty_slot, loc)
+        self.surface.blit(self.empty_slot, self.deck_location)
+        self.surface.blit(self.hearts_slot, self.home_location[0])
+        self.surface.blit(self.clubs_slot, self.home_location[1])
+        self.surface.blit(self.diamonds_slot, self.home_location[2])
+        self.surface.blit(self.spades_slot, self.home_location[3])
