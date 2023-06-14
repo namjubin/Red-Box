@@ -73,9 +73,10 @@ class Solitaire:
             if reset:
                 cards = self.cards
                 shuffle(cards)
-
-                for i in cards:
-                    print(i.sult, i.num)
+                board = [cards[:1], cards[1:3], cards[3:6], cards[6:10], cards[10:15], cards[15:21], cards[21:28]]
+                for i in range(len(board)):
+                    for j in range(len(board[i])):
+                        board[i][j].set_location(self.card_location[i][0], self.card_location[i][1]+(20*j))
                 reset = False
 
             self.surface.fill((50, 201, 76))
@@ -92,12 +93,12 @@ class Solitaire:
                 
             keys = pg.key.get_pressed()
 
-            self.draw_board()
+            self.draw_board(board)
 
             pg.display.flip()
             clock.tick(60)
 
-    def draw_board(self):
+    def draw_board(self, board):
         for loc in self.card_location:
             self.surface.blit(self.empty_slot, loc)
         self.surface.blit(self.empty_slot, self.deck_location)
@@ -105,3 +106,8 @@ class Solitaire:
         self.surface.blit(self.clubs_slot, self.home_location[1])
         self.surface.blit(self.diamonds_slot, self.home_location[2])
         self.surface.blit(self.spades_slot, self.home_location[3])
+
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                board[i][j].show()
+                
