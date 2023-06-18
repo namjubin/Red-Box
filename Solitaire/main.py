@@ -77,6 +77,7 @@ class Solitaire:
                 for i in range(len(board)):
                     for j in range(len(board[i])):
                         board[i][j].set_location(self.card_location[i][0], self.card_location[i][1]+(20*j))
+                    board[i][-1].open = True
                 reset = False
 
             self.surface.fill((50, 201, 76))
