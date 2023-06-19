@@ -37,10 +37,11 @@ class Klondike:
         pass
 
 class Solitaire:
-    def start(self, surface):
+    def __init__(self, surface):
         self.surface = surface
-        sults = ['spades', 'diamonds', 'hearts', 'clubs']
-        nums = ['ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king']
+
+        self.sults = ['spades', 'diamonds', 'hearts', 'clubs']
+        self.nums = ['ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king']
         dir = 'Solitaire/img/card/'
         self.cards = []
         self.card_back = pg.image.load(dir+'card_back.png')
@@ -59,11 +60,13 @@ class Solitaire:
         self.card_location = [(95, 140), (185, 140), (275, 140), (365, 140), (455, 140), (545, 140), (635, 140)]
         self.home_location = [(365, 20), (455, 20), (545, 20), (635, 20)]
         self.deck_location = (95, 20)
+    def start(self):
+        
 
 
-        for sult in sults:
-            for num in nums:
-                self.cards.append(Card(surface, pg.image.load(f'{dir}{num}_{sult}.png'), self.card_back, sult, num))
+        for sult in self.sults:
+            for num in self.nums:
+                self.cards.append(Card(self.surface, pg.image.load(f'{dir}{num}_{sult}.png'), self.card_back, sult, num))
 
         clock = pg.time.Clock()
         run = True
@@ -77,6 +80,7 @@ class Solitaire:
                 for i in range(len(board)):
                     for j in range(len(board[i])):
                         board[i][j].set_location(self.card_location[i][0], self.card_location[i][1]+(20*j))
+                    board[i][-1].open = True
                 reset = False
 
             self.surface.fill((50, 201, 76))
