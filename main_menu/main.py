@@ -13,11 +13,10 @@ class Main_menu:
         self.run = True
         self.fpsClock = pg.time.Clock()
         self.screen_size = pg.display.get_surface().get_size()
-        self.logo = pg.image.load('.\main_menu\img\LOGO.png')
-        dis = self.logo.get_height()//3
-        dis = [int(self.logo.get_width()*(dis/self.screen_size[1])), dis]
-        self.logo = pg.transform.scale(self.logo, dis)
-        self.loc = [(self.screen_size[0]-self.logo.get_width())//2, (self.screen_size[1]-self.logo.get_height())//2]
+        
+        self.icon = pg.image.load("./main_menu/img/icon.png")
+        self.title = pg.image.load("./main_menu/img/title.png")
+        self.sub_text = pg.image.load("./main_menu/img/sub_text.png")
 
     def start(self):
         while self.run:
@@ -31,7 +30,6 @@ class Main_menu:
                     if event.key == pg.K_ESCAPE:
                         self.run = False
 
-            self.screen.blit(self.logo, self.loc)
 
             pg.display.flip()
             self.fpsClock.tick(60)
