@@ -63,18 +63,20 @@ class Main_menu:
                 elif self.title_alpha != 255:
                     self.title_alpha += 5
                     self.title.set_alpha(self.title_alpha)
-                else:
+                elif self.w == 122:
                     self.sub_text_show = True
-                    self.intor = False
+                elif self.w == 172:
+                    self.intro = False
                 
                 self.w += 1
 
-            self.surface.blit(self.show_icon, self.icon_loc)
+                self.surface.blit(self.show_icon, self.icon_loc)
+                if self.title_show:
+                    self.surface.blit(self.title, self.title_loc)
+                if self.sub_text_show:
+                    self.surface.blit(self.sub_text, self.sub_text_loc)
 
-            if self.title_show:
-                self.surface.blit(self.title, self.title_loc)
-            if self.sub_text_show:
-                self.surface.blit(self.sub_text, self.sub_text_loc)
+            
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
