@@ -21,6 +21,7 @@ class Main_menu:
         self.icon = pg.image.load("./main_menu/img/icon.png")
         self.icon = pg.transform.scale(self.icon, (1280, 920))
         self.title = pg.image.load("./main_menu/img/title.png")
+        self.title = pg.transform.scale(self.title, (944, 190))
         self.sub_text = pg.image.load("./main_menu/img/sub_text.png")
 
         self.icon_loc = [(self.surface_rect.width//2)-(1280//2), 150]
@@ -28,6 +29,7 @@ class Main_menu:
 
         self.intro = True
         self.w = 1
+        self.title_show = False
 
     def start(self):
         while self.run:
@@ -43,13 +45,19 @@ class Main_menu:
                         self.run = False
             
             if self.intro:
-                if self.w <= 120:
+                if self.w < 120:
                     self.show_icon = pg.transform.scale(self.icon, (self.icon_rect.width-5*self.w, self.icon_rect.height-4*self.w))
                     self.icon_loc[0] += 2.5
                     self.icon_loc[1] += 1
-                    self.w += 1
+                elif self.w == 130:
+                    self.title_show = True
+                
+                self.w += 1
 
             self.surface.blit(self.show_icon, self.icon_loc)
+
+            if self.title_show:
+                self.surface.blit(self.title, (0,0))
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
