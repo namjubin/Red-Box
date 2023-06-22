@@ -18,6 +18,7 @@ class Main_menu:
         self.surface_size = (int(self.surface_rect.width*(self.screen_size[1]/self.surface_rect.height)), self.screen_size[1])
         self.surface_loc = ((self.screen_size[0]//2)-(self.surface_size[0]//2), 0)
         
+        ### intro ###
         self.icon = pg.image.load("./main_menu/img/icon.png")
         self.icon = pg.transform.scale(self.icon, (1280, 920))
         self.title = pg.image.load("./main_menu/img/title.png")
@@ -39,21 +40,38 @@ class Main_menu:
         self.title_alpha = 0
         self.sub_text_show = False
         self.sub_text_alpha = 0
+        ### intro ###
+
+        ### main_screen ###
+        self.main_screen = False
+
+        self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
+        self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
+
+        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (200, 200))
+        self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (200, 200))
+
+        self.joystick_test_btn = ImageButton(self.surface, 400, 100, self.joystick_test_img, (0,0,0), 5)
+        self.T_rex_runner_btn = ImageButton(self.surface, 100, 100, self.T_rex_runner_img, (0,0,0), 5)
+
+        self.T_rex_runner_btn.set_state(True)
+        self.joystick_test_btn.set_state(True)
+        ### main_screen ###
 
     def start(self):
         while self.run:
-            self.screen.fill((255,255,255))
-            self.surface.fill((255,255,255))
-
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    self.run = False
-
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_ESCAPE:
-                        self.run = False
-            
             if self.intro:
+                self.screen.fill((255,255,255))
+                self.surface.fill((255,255,255))
+
+                for event in pg.event.get():
+                    if event.type == pg.QUIT:
+                        self.run = False
+
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_ESCAPE:
+                            self.run = False
+
                 if self.w < 70:
                     self.show_icon = pg.transform.scale(self.icon, (self.icon_rect.width-10*self.w, self.icon_rect.height-8*self.w))
                     self.icon_loc[0] += 5
@@ -63,10 +81,11 @@ class Main_menu:
                 elif self.title_alpha != 255:
                     self.title_alpha += 5
                     self.title.set_alpha(self.title_alpha)
-                elif self.w == 122:
+                elif self.w == 142:
                     self.sub_text_show = True
-                elif self.w == 172:
+                elif self.w == 192:
                     self.intro = False
+                    self.main_screen = True
                 
                 self.w += 1
 
@@ -75,8 +94,22 @@ class Main_menu:
                     self.surface.blit(self.title, self.title_loc)
                 if self.sub_text_show:
                     self.surface.blit(self.sub_text, self.sub_text_loc)
-
             
+            if self.main_screen:
+                self.screen.fill((50,50,50))
+                self.surface.fill((50,50,50))
+
+                for event in pg.event.get():
+                    if event.type == pg.QUIT:
+                        self.run = False
+
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_ESCAPE:
+                            self.run = False
+
+
+                self.T_rex_runner_btn.show()
+                self.joystick_test_btn.show()
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
