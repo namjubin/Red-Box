@@ -54,9 +54,9 @@ class Main_menu:
             print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)
 
-        self.left_btn_loc = (100, 450)
-        self.center_btn_loc = (550, 300)
-        self.right_btn_loc = (1200, 450)
+        self.left_btn_loc = (100, 550)
+        self.center_btn_loc = (550, 400)
+        self.right_btn_loc = (1200, 550)
 
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
@@ -142,7 +142,7 @@ class Main_menu:
                             else:
                                 self.index += 1
 
-                pg.draw.rect(self.surface, (255,50,50), (540, 290, 520, 520))
+                pg.draw.rect(self.surface, (255,50,50), (540, 390, 520, 520))
                 self.surface.blit(self.bigimg_list[self.index], self.center_btn_loc)
                 self.surface.blit(self.img_list[self.index-1], self.left_btn_loc)
                 self.surface.blit(self.img_list[(self.index+1)%len(self.img_list)], self.right_btn_loc)
