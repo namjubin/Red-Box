@@ -54,19 +54,24 @@ class Main_menu:
             print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)
 
+        self.center_btn_loc = (self.surface.get_width()//2-250, 300)
+
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
+        self.tetris_img = pg.image.load('./main_menu/img/tetris.png')
 
-        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (200, 200))
-        self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (200, 200))
+        self.joystick_test_bigimg = pg.transform.scale(self.joystick_test_img, (500, 500))
+        self.T_rex_runner_bigimg = pg.transform.scale(self.T_rex_runner_img, (500, 500))
+        self.tetris_bigimg = pg.transform.scale(self.tetris_img, (500, 500))
 
-        self.joystick_test_btn = ImageButton(self.surface, 400, 100, self.joystick_test_img, (0,0,0), 5)
-        self.T_rex_runner_btn = ImageButton(self.surface, 100, 100, self.T_rex_runner_img, (0,0,0), 5)
+        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (300, 300))
+        self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (300, 300))
+        self.tetris_img = pg.transform.scale(self.tetris_img, (300, 300))
 
-        self.joystick_test_btn.set_state(True)
-        self.T_rex_runner_btn.set_state(True)
+        self.index = 0
+        self.bigimg_list = [self.joystick_test_bigimg, self.T_rex_runner_bigimg, self.tetris_bigimg]
+        self.img_list = [self.joystick_test_img, self.T_rex_runner_img, self.tetris_img]
 
-        
         ### main_screen ###
 
     def start(self):
@@ -117,10 +122,21 @@ class Main_menu:
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
                             self.run = False
+                        
+                        if event.key == pg.K_LEFT:
+                            if self.index == 0:
+                                self.index = len(self.img_list)-1
+                            else:
+                                self.index -= 1
+                        
+                        if event.key == pg.K_RIGHT:
+                            if self.index == len(self.img_list)-1:
+                                self.index = 0
+                            else:
+                                self.index += 1
 
 
-                self.T_rex_runner_btn.show()
-                self.joystick_test_btn.show()
+                self.surface.blit(self.bigimg_list[self.index], self.center_btn_loc)
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
