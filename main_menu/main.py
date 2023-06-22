@@ -48,7 +48,10 @@ class Main_menu:
         ### main_screen ###
         self.main_screen = False
 
-        self.joystick_test = joystick_test(self.screen)
+        try:
+            self.joystick_test = joystick_test(self.screen)
+        except:
+            print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)
 
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
