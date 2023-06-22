@@ -1,5 +1,8 @@
 import pygame as pg
 from tool.widget.widget import *
+
+from Circuit.Joy_stick.joystick_test import joystick_test
+from T_Rex_Runner.main import T_Rex_Runner
 pg.init()
 
 
@@ -45,6 +48,9 @@ class Main_menu:
         ### main_screen ###
         self.main_screen = False
 
+        self.joystick_test = joystick_test(self.screen)
+        self.T_rex_runner = T_Rex_Runner(self.screen)
+
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
 
@@ -54,8 +60,10 @@ class Main_menu:
         self.joystick_test_btn = ImageButton(self.surface, 400, 100, self.joystick_test_img, (0,0,0), 5)
         self.T_rex_runner_btn = ImageButton(self.surface, 100, 100, self.T_rex_runner_img, (0,0,0), 5)
 
-        self.T_rex_runner_btn.set_state(True)
         self.joystick_test_btn.set_state(True)
+        self.T_rex_runner_btn.set_state(True)
+
+        
         ### main_screen ###
 
     def start(self):
