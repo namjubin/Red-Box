@@ -48,22 +48,46 @@ class Main_menu:
         ### main_screen ###
         self.main_screen = False
 
-        self.joystick_test = joystick_test(self.screen)
+        try:
+            self.joystick_test = joystick_test(self.screen)
+        except:
+            print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)
+
+        self.left_btn_loc = (100, 550)
+        self.center_btn_loc = (550, 400)
+        self.right_btn_loc = (1200, 550)
 
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
+        self.tetris_img = pg.image.load('./main_menu/img/tetris.png')
 
-        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (200, 200))
-        self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (200, 200))
+        self.joystick_test_bigimg = pg.transform.scale(self.joystick_test_img, (500, 500))
+        self.T_rex_runner_bigimg = pg.transform.scale(self.T_rex_runner_img, (500, 500))
+        self.tetris_bigimg = pg.transform.scale(self.tetris_img, (500, 500))
 
-        self.joystick_test_btn = ImageButton(self.surface, 400, 100, self.joystick_test_img, (0,0,0), 5)
-        self.T_rex_runner_btn = ImageButton(self.surface, 100, 100, self.T_rex_runner_img, (0,0,0), 5)
+        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (300, 300))
+        self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (300, 300))
+        self.tetris_img = pg.transform.scale(self.tetris_img, (300, 300))
 
-        self.joystick_test_btn.set_state(True)
-        self.T_rex_runner_btn.set_state(True)
+        self.joystick_test_img.set_alpha(200)
+        self.T_rex_runner_img.set_alpha(200)
+        self.tetris_img.set_alpha(200)
 
-        
+        self.index = 0
+        self.bigimg_list = [self.joystick_test_bigimg, self.T_rex_runner_bigimg, self.tetris_bigimg]
+        self.img_list = [self.joystick_test_img, self.T_rex_runner_img, self.tetris_img]
+
+        self.text_list = ['Joystick Test', 'T-Rex runner', 'Tetris']
+        self.title_font = pg.font.SysFont('notosanscjkkrblack', 200)
+        self.title_list = []
+        self.title_loc_list = []
+
+        for text in self.text_list:
+            title = self.title_font.render(text, True, (255,255,255))
+            self.title_list.append(title)
+            self.title_loc_list.append([(self.surface.get_width()//2)-(title.get_width()//2), 200])
+
         ### main_screen ###
 
     def start(self):
@@ -114,10 +138,24 @@ class Main_menu:
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
                             self.run = False
+                        
+                        if event.key == pg.K_LEFT:
+                            if self.index == 0:
+                                self.index = len(self.img_list)-1
+                            else:
+                                self.index -= 1
+                        
+                        if event.key == pg.K_RIGHT:
+                            if self.index == len(self.img_list)-1:
+                                self.index = 0
+                            else:
+                                self.index += 1
 
-
-                self.T_rex_runner_btn.show()
-                self.joystick_test_btn.show()
+                pg.draw.rect(self.surface, (255,50,50), (540, 390, 520, 520))
+                self.surface.blit(self.bigimg_list[self.index], self.center_btn_loc)
+                self.surface.blit(self.img_list[self.index-1], self.left_btn_loc)
+                self.surface.blit(self.img_list[(self.index+1)%len(self.img_list)], self.right_btn_loc)
+                self.surface.blit(self.title_list[self.index], self.title_loc_list[self.index])
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
