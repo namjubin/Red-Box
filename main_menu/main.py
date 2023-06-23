@@ -86,7 +86,10 @@ class Main_menu:
         for text in self.text_list:
             title = self.title_font.render(text, True, (255,255,255))
             self.title_list.append(title)
-            self.title_loc_list.append([(self.surface.get_width()//2)-(title.get_width()//2), 200])
+            self.title_loc_list.append([(self.surface.get_width()//2)-(title.get_width()//2), 150])
+
+        self.start_btn = Button(self.surface, 100, 100, 300, 100, 'start', text_size=100, background=(0,255,0), text_color=(255,255,255), accent=(0,0,0), accent_size=5)
+        self.start_btn.set_state(True)
 
         ### main_screen ###
 
@@ -156,6 +159,7 @@ class Main_menu:
                 self.surface.blit(self.img_list[self.index-1], self.left_btn_loc)
                 self.surface.blit(self.img_list[(self.index+1)%len(self.img_list)], self.right_btn_loc)
                 self.surface.blit(self.title_list[self.index], self.title_loc_list[self.index])
+                self.start_btn.show()
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
