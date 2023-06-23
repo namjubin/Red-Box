@@ -49,7 +49,7 @@ class Main_menu:
         self.main_screen = False
 
         try:
-            self.joystick_test = joystick_test(self.screen)
+            self.joystick_test = Joystick_test(self.screen)
         except:
             print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)

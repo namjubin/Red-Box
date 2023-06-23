@@ -275,6 +275,3 @@ class T_Rex_Runner:
 
             pg.display.flip()
             self.fpsClock.tick(self.fps)
-
-        #종료
-        pg.quit()
