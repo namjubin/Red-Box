@@ -1,7 +1,7 @@
 import pygame as pg
 import serial
 
-class joystick_test:
+class Joystick_test:
     def __init__(self, screen):
         self.port = 'com3'
         self.run = True

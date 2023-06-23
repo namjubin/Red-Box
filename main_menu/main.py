@@ -1,7 +1,7 @@
 import pygame as pg
 from tool.widget.widget import *
 
-from Circuit.Joy_stick.joystick_test import joystick_test
+from Circuit.Joy_stick.joystick_test import Joystick_test
 from T_Rex_Runner.main import T_Rex_Runner
 pg.init()
 
@@ -83,12 +83,16 @@ class Main_menu:
         self.title_list = []
         self.title_loc_list = []
 
+        t_rex_runner = T_Rex_Runner(self.screen)
+        self.game_list = ['test', t_rex_runner.show]
+
         for text in self.text_list:
             title = self.title_font.render(text, True, (255,255,255))
             self.title_list.append(title)
             self.title_loc_list.append([(self.surface.get_width()//2)-(title.get_width()//2), 150])
 
-        self.start_btn = Button(self.surface, 650, 950, 300, 100, 'start', text_size=100, background=(255,50,50), text_color=(255,255,255), accent=(0,0,0), accent_size=5)
+        self.start_btn = Button(self.surface, 650, 950, 300, 100, 'start', text_size=80, background=(255,50,50), text_color=(255,255,255), accent=(100,0,0), accent_size=5, font='./main_menu/font/upheavtt.ttf')
+        self.start_btn.set_state(True)
 
         ### main_screen ###
 
@@ -152,7 +156,14 @@ class Main_menu:
                                 self.index = 0
                             else:
                                 self.index += 1
-
+                        
+                        if event.key == pg.K_SPACE:
+                            try:
+                                self.game_list[self.index]()
+                            except:
+                                print("게임 로딩 실패")
+                
+                pg.draw.rect(self.surface, (100,0,0), (535, 335, 530, 530))
                 pg.draw.rect(self.surface, (255,50,50), (540, 340, 520, 520))
                 self.surface.blit(self.bigimg_list[self.index], self.center_btn_loc)
                 self.surface.blit(self.img_list[self.index-1], self.left_btn_loc)
