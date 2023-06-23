@@ -3,6 +3,7 @@ from tool.widget.widget import *
 
 from Circuit.Joy_stick.joystick_test import Joystick_test
 from T_Rex_Runner.main import T_Rex_Runner
+from tetris.tetris import Tetris
 pg.init()
 
 
@@ -52,7 +53,8 @@ class Main_menu:
             self.joystick_test = Joystick_test(self.screen)
         except:
             print("JoyStick Not Found")
-        self.T_rex_runner = T_Rex_Runner(self.screen)
+        self.t_rex_runner = T_Rex_Runner(self.screen)
+        self.tetris = Tetris(self.screen)
 
         self.left_btn_loc = (100, 500)
         self.center_btn_loc = (550, 350)
@@ -83,8 +85,7 @@ class Main_menu:
         self.title_list = []
         self.title_loc_list = []
 
-        t_rex_runner = T_Rex_Runner(self.screen)
-        self.game_list = ['test', t_rex_runner.show]
+        self.game_list = ['test', self.t_rex_runner.show, self.tetris.main]
 
         for text in self.text_list:
             title = self.title_font.render(text, True, (255,255,255))
