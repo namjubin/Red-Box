@@ -54,9 +54,9 @@ class Main_menu:
             print("JoyStick Not Found")
         self.T_rex_runner = T_Rex_Runner(self.screen)
 
-        self.left_btn_loc = (100, 550)
-        self.center_btn_loc = (550, 400)
-        self.right_btn_loc = (1200, 550)
+        self.left_btn_loc = (100, 500)
+        self.center_btn_loc = (550, 350)
+        self.right_btn_loc = (1200, 500)
 
         self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
@@ -79,7 +79,7 @@ class Main_menu:
         self.img_list = [self.joystick_test_img, self.T_rex_runner_img, self.tetris_img]
 
         self.text_list = ['Joystick Test', 'T-Rex runner', 'Tetris']
-        self.title_font = pg.font.SysFont('notosanscjkkrblack', 200)
+        self.title_font = pg.font.Font('./main_menu/font/upheavtt.ttf', 150)
         self.title_list = []
         self.title_loc_list = []
 
@@ -88,8 +88,7 @@ class Main_menu:
             self.title_list.append(title)
             self.title_loc_list.append([(self.surface.get_width()//2)-(title.get_width()//2), 150])
 
-        self.start_btn = Button(self.surface, 100, 100, 300, 100, 'start', text_size=100, background=(0,255,0), text_color=(255,255,255), accent=(0,0,0), accent_size=5)
-        self.start_btn.set_state(True)
+        self.start_btn = Button(self.surface, 650, 950, 300, 100, 'start', text_size=100, background=(255,50,50), text_color=(255,255,255), accent=(0,0,0), accent_size=5)
 
         ### main_screen ###
 
@@ -154,7 +153,7 @@ class Main_menu:
                             else:
                                 self.index += 1
 
-                pg.draw.rect(self.surface, (255,50,50), (540, 390, 520, 520))
+                pg.draw.rect(self.surface, (255,50,50), (540, 340, 520, 520))
                 self.surface.blit(self.bigimg_list[self.index], self.center_btn_loc)
                 self.surface.blit(self.img_list[self.index-1], self.left_btn_loc)
                 self.surface.blit(self.img_list[(self.index+1)%len(self.img_list)], self.right_btn_loc)
