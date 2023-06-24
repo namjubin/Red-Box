@@ -85,7 +85,7 @@ class Main_menu:
         self.title_list = []
         self.title_loc_list = []
 
-        self.game_list = ['test', self.t_rex_runner.show, self.tetris.main]
+        self.game_list = ['test', self.t_rex_runner.show, self.tetris.show]
 
         for text in self.text_list:
             title = self.title_font.render(text, True, (255,255,255))

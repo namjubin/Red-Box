@@ -5,7 +5,7 @@ import random
 pygame.init()
 
 # Screen dimensions
-WIDTH, HEIGHT = 400, 1000
+WIDTH, HEIGHT = 400, 600
 GRID_SIZE = 25
 
 # Colors
@@ -141,11 +141,11 @@ class Tetromino:
 
 
 class Tetris:
-    def __init__(self, screen, width=400, height=600):
+    def __init__(self, screen):
         self.screen = screen
-        self.width = width
-        self.height = height
-        self.grid = [[0 for _ in range(width)] for _ in range(height)]
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         
         self.setting()
 
@@ -230,20 +230,20 @@ class Tetris:
             else:
                 self.lock_piece(self.current_piece)
 
-    def draw(self, screen):
+    def draw(self):
         """Draw the grid and the current piece"""
         for y, row in enumerate(self.grid):
             for x, cell in enumerate(row):
                 if cell:
-                    pygame.draw.rect(screen, cell, (x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1))
+                    pygame.draw.rect(self.surface, cell, (x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1))
 
         if self.current_piece:
             for i, row in enumerate(self.current_piece.shape[self.current_piece.rotation % len(self.current_piece.shape)]):
                 for j, cell in enumerate(row):
                     if cell == 'O':
-                        pygame.draw.rect(screen, self.current_piece.color, ((self.current_piece.x + j) * GRID_SIZE, (self.current_piece.y + i) * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1))
+                        pygame.draw.rect(self.surface, self.current_piece.color, ((self.current_piece.x + j) * GRID_SIZE, (self.current_piece.y + i) * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1))
 
-    def main(self):
+    def show(self):
         # Initialize pygame
         # Create a clock object
         clock = pygame.time.Clock()
@@ -289,7 +289,7 @@ class Tetris:
             # Draw the score on the screen
             draw_score(self.surface, self.score, 10, 10)
             # Draw the grid and the current piece
-            self.draw(self.surface)
+            self.draw()
             if self.game_over:
                 # Draw the "Game Over" message
                 draw_game_over(self.surface, WIDTH // 2 - 100, HEIGHT // 2 - 30)
