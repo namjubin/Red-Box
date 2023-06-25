@@ -143,19 +143,27 @@ class Tetromino:
 class Tetris:
     def __init__(self, screen):
         self.screen = screen
-        self.width = WIDTH
-        self.height = HEIGHT
-        self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
-        
+        self.surface = pygame.Surface((WIDTH, HEIGHT))
+        self.width = WIDTH // GRID_SIZE
+        self.height = HEIGHT // GRID_SIZE
+        self.screen_size = pygame.display.get_surface().get_size()
+        self.surface_size = ((self.screen_size[1]/HEIGHT)*self.surface.get_width(), self.screen_size[1])
+        self.surface_loc = (self.screen_size[0]//2-self.surface_size[0]//2, 0)
+
+        self.img1 = pygame.image.load('./tetris/img/tetris_1.png')
+        self.img2 = pygame.image.load('./tetris/img/tetris_2.png')
+        self.img1 = pygame.transform.scale(self.img1, ((self.screen_size[1]/self.img1.get_height())*self.img1.get_width(), self.screen_size[1]))
+        self.img2 = pygame.transform.scale(self.img2, ((self.screen_size[1]/self.img2.get_height())*self.img2.get_width(), self.screen_size[1]))
+        self.img1_loc = (self.surface_loc[0]-self.img1.get_width(), 0)
+        self.img2_loc = (self.surface_loc[0]+self.surface_size[0], 0)
+
         self.setting()
 
     def setting(self):
-        self.run = True
+        self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.current_piece = self.new_piece()
         self.game_over = False
         self.score = 0  # Add score attribute
-
-        self.surface = pygame.Surface((WIDTH, HEIGHT))
 
     def new_piece(self):
         # Choose a random shape
@@ -219,9 +227,6 @@ class Tetris:
             self.game_over = True
         return lines_cleared
 
-
-    
-
     def update(self):
         """Move the tetromino down one cell"""
         if not self.game_over:
@@ -244,43 +249,47 @@ class Tetris:
                         pygame.draw.rect(self.surface, self.current_piece.color, ((self.current_piece.x + j) * GRID_SIZE, (self.current_piece.y + i) * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1))
 
     def show(self):
-        # Initialize pygame
         # Create a clock object
+        run = True
         clock = pygame.time.Clock()
         # Create a Tetris object
         fall_time = 0
-        fall_speed = 50  # You can adjust this value to change the falling speed, it's in milliseconds
-        while self.run:
+        fall_speed = 10  # You can adjust this value to change the falling speed, it's in milliseconds
+        while run:
             # Fill the screen with black
-            self.surface.fill(BLACK) 
+            self.surface.fill((BLACK))
+            self.screen.fill((BLACK))
             for event in pygame.event.get():
                 # Check for the QUIT event
                 if event.type == pygame.QUIT:
-                    self.run = False
+                    run = False
                 # Check for the KEYDOWN event
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.run = False
-                    if event.key == pygame.K_LEFT:
-                        if self.valid_move(self.current_piece, -1, 0, 0):
-                            self.current_piece.x -= 1  # Move the piece to the left
-                    if event.key == pygame.K_RIGHT:
-                        if self.valid_move(self.current_piece, 1, 0, 0):
-                            self.current_piece.x += 1  # Move the piece to the right
-                    if event.key == pygame.K_DOWN:
-                        if self.valid_move(self.current_piece, 0, 1, 0):
-                            self.current_piece.y += 1  # Move the piece down
-                    if event.key == pygame.K_UP:
-                        if self.valid_move(self.current_piece, 0, 0, 1):
-                            self.current_piece.rotation += 1  # Rotate the piece
-                    if event.key == pygame.K_SPACE:
-                        while self.valid_move(self.current_piece, 0, 1, 0):
-                            self.current_piece.y += 1  # Move the piece down until it hits the bottom
-                        self.lock_piece(self.current_piece)  # Lock the piece in place
+                        run = False
+                    if self.game_over:
+                        self.setting()
+                    else:
+                        if event.key == pygame.K_LEFT:
+                            if self.valid_move(self.current_piece, -1, 0, 0):
+                                self.current_piece.x -= 1  # Move the piece to the left
+                        if event.key == pygame.K_RIGHT:
+                            if self.valid_move(self.current_piece, 1, 0, 0):
+                                self.current_piece.x += 1  # Move the piece to the right
+                        if event.key == pygame.K_DOWN:
+                            if self.valid_move(self.current_piece, 0, 1, 0):
+                                self.current_piece.y += 1  # Move the piece down
+                        if event.key == pygame.K_UP:
+                            if self.valid_move(self.current_piece, 0, 0, 1):
+                                self.current_piece.rotation += 1  # Rotate the piece
+                        if event.key == pygame.K_SPACE:
+                            while self.valid_move(self.current_piece, 0, 1, 0):
+                                self.current_piece.y += 1  # Move the piece down until it hits the bottom
+                            self.lock_piece(self.current_piece)  # Lock the piece in place
             # Get the number of milliseconds since the last frame
             delta_time = clock.get_rawtime() 
             # Add the delta time to the fall time
-            fall_time += delta_time 
+            fall_time += 1 
             if fall_time >= fall_speed:
                 # Move the piece down
                 self.update()
@@ -293,28 +302,32 @@ class Tetris:
             if self.game_over:
                 # Draw the "Game Over" message
                 draw_game_over(self.surface, WIDTH // 2 - 100, HEIGHT // 2 - 30)
-                # Check for the KEYDOWN event
-                if event.type == pygame.KEYDOWN:
-                    # Create a new Tetris object
-                    self.setting()
+            
+            self.screen.blit(self.img1, self.img1_loc)
+            self.screen.blit(self.img2, self.img2_loc)
+            self.screen.blit(pygame.transform.scale(self.surface, self.surface_size), self.surface_loc)
+            
             # Update the display
             pygame.display.flip()
             # Set the framerate
             clock.tick(60)
 
-            self.screen.blit(self.surface, (0,0))
-
 
 
 def draw_score(screen, score, x, y):
-   
     font = pygame.font.Font(None, 36)
-    text = font.render(f"ni zumsu: {score}", True, WHITE)
+    text = font.render(f"score : {score}", False, WHITE)
     screen.blit(text, (x, y))
     
     
 def draw_game_over(screen, x, y):
     """Draw the game over text on the screen"""
     font = pygame.font.Font(None, 48)
-    text = font.render("Game Over", True, RED)
+    text = font.render("Game Over", False, WHITE)
     screen.blit(text, (x, y))
+
+if __name__ == "__main__":
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Tetris')
+    tetris = Tetris(screen)
+    tetris.show()

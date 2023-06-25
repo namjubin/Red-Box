@@ -1,7 +1,7 @@
 import pygame as pg
 from tool.widget.widget import *
 
-from Circuit.Joy_stick.joystick_test import Joystick_test
+
 from T_Rex_Runner.main import T_Rex_Runner
 from tetris.tetris import Tetris
 pg.init()

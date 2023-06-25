@@ -7,7 +7,7 @@ from main_menu.main import Main_menu
 pg.init()
 
 # 전체 화면
-FULLSCREEN = True
+FULLSCREEN = False
 
 if FULLSCREEN:
     for m in get_monitors():
