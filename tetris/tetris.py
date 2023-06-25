@@ -154,8 +154,8 @@ class Tetris:
 
         self.img1 = pygame.image.load('./tetris/img/tetris_1.png')
         self.img2 = pygame.image.load('./tetris/img/tetris_2.png')
-        self.img1 = pygame.transform.scale(self.img1, ((self.screen_size[1]/self.img1.get_height())*self.img1.get_width(), self.screen_size[1]))
-        self.img2 = pygame.transform.scale(self.img2, ((self.screen_size[1]/self.img2.get_height())*self.img2.get_width(), self.screen_size[1]))
+        self.img1 = pygame.transform.scale(self.img1, (int((self.screen_size[1]/self.img1.get_height())*self.img1.get_width()), self.screen_size[1]))
+        self.img2 = pygame.transform.scale(self.img2, (int((self.screen_size[1]/self.img2.get_height())*self.img2.get_width()), self.screen_size[1]))
         self.img1_loc = (self.surface_loc[0]-self.img1.get_width(), 0)
         self.img2_loc = (self.surface_loc[0]+self.surface_size[0], 0)
 
