@@ -205,7 +205,7 @@ class Main_menu:
                         if event.key == pg.K_SPACE:
                             try:
                                 self.game_list[self.index]()
-                                self.game_class[self.index].setting()
+                                self.setting_list[self.index]()
                                 
                             except:
                                 print("게임 로딩 실패")
@@ -229,5 +229,6 @@ class Main_menu:
             pg.display.flip()
             self.fpsClock.tick(60)
 
-        self.joystick.ser.close()
+        if self.joystick:
+            self.joystick.ser.close()
         pygame.quit()
