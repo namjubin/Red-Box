@@ -1,9 +1,11 @@
 import pygame as pg
 from tool.widget.widget import *
+import sys
 
-
+from joystick.joystick_test import Joystick
 from T_Rex_Runner.main import T_Rex_Runner
 from tetris.tetris import Tetris
+from quit_circle.main import Quit_circle
 pg.init()
 
 
@@ -44,48 +46,54 @@ class Main_menu:
         self.title_alpha = 0
         self.sub_text_show = False
         self.sub_text_alpha = 0
+        self.joystick = True
         ### intro ###
 
         ### main_screen ###
         self.main_screen = False
 
         try:
-            self.joystick_test = Joystick_test(self.screen)
+            self.joystick = Joystick(self.screen)
         except:
+            self.joystick = False
             print("JoyStick Not Found")
-        self.t_rex_runner = T_Rex_Runner(self.screen)
-        self.tetris = Tetris(self.screen)
+        self.t_rex_runner = T_Rex_Runner(self.screen, self.joystick)
+        self.tetris = Tetris(self.screen, self.joystick)
+        self.quit_circle = Quit_circle(self.surface, state2=False)
 
         self.left_btn_loc = (100, 500)
         self.center_btn_loc = (550, 350)
         self.right_btn_loc = (1200, 500)
 
-        self.joystick_test_img = pg.image.load('./main_menu/img/joystick.png')
+        self.joystick_img = pg.image.load('./main_menu/img/joystick.png')
         self.T_rex_runner_img = pg.image.load('./main_menu/img/T-Rex_stop.png')
         self.tetris_img = pg.image.load('./main_menu/img/tetris.png')
 
-        self.joystick_test_bigimg = pg.transform.scale(self.joystick_test_img, (500, 500))
+        self.joystick_bigimg = pg.transform.scale(self.joystick_img, (500, 500))
         self.T_rex_runner_bigimg = pg.transform.scale(self.T_rex_runner_img, (500, 500))
         self.tetris_bigimg = pg.transform.scale(self.tetris_img, (500, 500))
 
-        self.joystick_test_img = pg.transform.scale(self.joystick_test_img, (300, 300))
+        self.joystick_img = pg.transform.scale(self.joystick_img, (300, 300))
         self.T_rex_runner_img = pg.transform.scale(self.T_rex_runner_img, (300, 300))
         self.tetris_img = pg.transform.scale(self.tetris_img, (300, 300))
 
-        self.joystick_test_img.set_alpha(200)
+        self.joystick_img.set_alpha(200)
         self.T_rex_runner_img.set_alpha(200)
         self.tetris_img.set_alpha(200)
 
         self.index = 0
-        self.bigimg_list = [self.joystick_test_bigimg, self.T_rex_runner_bigimg, self.tetris_bigimg]
-        self.img_list = [self.joystick_test_img, self.T_rex_runner_img, self.tetris_img]
+        self.bigimg_list = [self.joystick_bigimg, self.T_rex_runner_bigimg, self.tetris_bigimg]
+        self.img_list = [self.joystick_img, self.T_rex_runner_img, self.tetris_img]
 
         self.text_list = ['Joystick Test', 'T-Rex runner', 'Tetris']
         self.title_font = pg.font.Font('./main_menu/font/upheavtt.ttf', 150)
         self.title_list = []
         self.title_loc_list = []
 
-        self.game_list = ['test', self.t_rex_runner.show, self.tetris.show]
+        if self.joystick:
+            self.game_list = [self.joystick.start, self.t_rex_runner.show, self.tetris.show]
+        else:
+            self.game_list = [None, self.t_rex_runner.show, self.tetris.show]
 
         for text in self.text_list:
             title = self.title_font.render(text, True, (255,255,255))
@@ -94,6 +102,10 @@ class Main_menu:
 
         self.start_btn = Button(self.surface, 650, 950, 300, 100, 'start', text_size=80, background=(255,50,50), text_color=(255,255,255), accent=(100,0,0), accent_size=5, font='./main_menu/font/upheavtt.ttf')
         self.start_btn.set_state(True)
+
+        self.quit_circle_state = False
+
+        self.state = 0
 
         ### main_screen ###
 
@@ -137,6 +149,37 @@ class Main_menu:
             if self.main_screen:
                 self.screen.fill((50,50,50))
                 self.surface.fill((50,50,50))
+                try:
+                    if self.joystick:
+                        if self.joystick.ser.in_waiting > 0:
+                            data = self.joystick.value()
+                            print(data)
+                            joystick_push = self.joystick.push(data)
+                            self.quit_circle_state = data[2]
+                            self.state = self.quit_circle.set_loc(data[0])
+                            if joystick_push[1]:
+                                if self.index == 0:
+                                    self.index = len(self.img_list)-1
+                                else:
+                                    self.index -= 1
+                            if joystick_push[3]:
+                                if self.index == len(self.img_list)-1:
+                                    self.index = 0
+                                else:
+                                    self.index += 1
+                            if joystick_push[2]:
+                                try:
+                                    self.game_list[self.index]()
+                                except:
+                                    self.game_list[self.index]()
+                                    print("게임 로딩 실패")
+                except:
+                    try:
+                        self.joystick = Joystick(self.screen)
+                        self.t_rex_runner = T_Rex_Runner(self.screen, self.joystick)
+                        self.tetris = Tetris(self.screen, self.joystick)
+                    except:
+                        self.joystick = False
 
                 for event in pg.event.get():
                     if event.type == pg.QUIT:
@@ -145,7 +188,7 @@ class Main_menu:
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
                             self.run = False
-                        
+
                         if event.key == pg.K_LEFT:
                             if self.index == 0:
                                 self.index = len(self.img_list)-1
@@ -160,7 +203,11 @@ class Main_menu:
                         
                         if event.key == pg.K_SPACE:
                             try:
-                                self.game_list[self.index]()
+                                if self.game_list[self.index]():
+                                    self.joystick.ser.close()
+                                    pygame.quit()
+                                    sys.exit()
+                                
                             except:
                                 print("게임 로딩 실패")
                 
@@ -172,7 +219,16 @@ class Main_menu:
                 self.surface.blit(self.title_list[self.index], self.title_loc_list[self.index])
                 self.start_btn.show()
 
+                if self.quit_circle_state:
+                    self.quit_circle.show()
+                else:
+                    if self.state == 1:
+                        self.run = False
+
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
             pg.display.flip()
             self.fpsClock.tick(60)
+
+        self.joystick.ser.close()
+        pygame.quit()

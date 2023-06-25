@@ -1,6 +1,5 @@
-import serial.tools.list_ports as sp
-
-list = sp.comports()
-
-for i in list:
-    print(i.device)
+import serial
+           
+ser = serial.Serial('com5', 9600, timeout=0.05)
+ser.flush()
+ser.close()

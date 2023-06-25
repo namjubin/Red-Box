@@ -1,22 +1,27 @@
 import pygame as pg
 from random import *
 import os
+from quit_circle.main import Quit_circle
+import sys
 
 class T_Rex_Runner:
-    def __init__(self, screen, fps=60):
+    def __init__(self, screen, joystick=False, fps=60):
         self.screen = screen
+        self.joystick = joystick
         self.fps = fps
         self.screen_size = pg.display.get_surface().get_size()
         self.size = (800,600)
         self.fpsClock = pg.time.Clock()
         self.run = True
+
+        self.surface = pg.Surface((800, 600))
+        self.surface_size = ((self.screen_size[1]/600)*800, self.screen_size[1])
+        self.surface_loc = (self.screen_size[0]//2-self.surface_size[0]//2, 0)
         
         self.main_rect = (0, 0, 720, 180)
         self.main_surface = pg.Surface(self.main_rect[2:])
 
-        x = int(self.screen_size[0] / 10) * 9
-        y = int(x/4)
-        self.show_rect = (int(self.screen_size[0]/2-x/2),int(self.screen_size[1]/2-y/2),x,y)
+        self.show_rect = (40, 210)
 
         self.image_loc = os.getcwd()+'/'
 
@@ -55,6 +60,11 @@ class T_Rex_Runner:
         self.t_rex_over_mask = pg.mask.from_surface(self.t_rex_over)
 
         self.fontObj = pg.font.Font(self.image_loc+'T_Rex_Runner/font/PressStart2P-Regular.ttf', 14)
+
+        self.quit_circle = Quit_circle(self.surface)
+        self.quit_circle_state = False
+        self.joystick_state = 0
+
         self.setting()
 
     def setting(self):
@@ -234,11 +244,30 @@ class T_Rex_Runner:
         self.speed = self.size[0]//value
 
     def show(self):
-
         while self.run:
             self.main_surface.fill((255, 255, 255))
+            self.surface.fill((255,255,255))
             self.screen.fill((255, 255, 255))
             self.screen.blit(self.main_surface,(0,0))
+
+            if self.joystick:
+                if self.joystick.ser.in_waiting > 0:
+                    data = self.joystick.value()
+                    joystick_push = self.joystick.push(data)
+
+                    self.quit_circle_state = data[2]
+                    self.joystick_state = self.quit_circle.set_loc(data[0])
+
+                    if joystick_push[0] and self.run:
+                        if not self.jump:
+                            self.jump_start = True
+                            self.jump = True
+                            self.up = True
+                        
+                        if self.collision:
+                            self.runing = True
+                            self.collision = False
+                            self.setting()
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -271,7 +300,19 @@ class T_Rex_Runner:
                     speed *= 0.9999
 
             self.draw_game()
-            self.screen.blit(pg.transform.scale(self.main_surface, self.show_rect[2:]), self.show_rect[:2])
+            self.surface.blit(self.main_surface, (self.show_rect))
+
+            if self.quit_circle_state:
+                    self.quit_circle.show()
+            else:
+                if self.joystick_state == 1:
+                    self.run = False
+                    return True
+                if self.joystick_state == 2:
+                    self.run = False
+                    return False
+
+            self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 
             pg.display.flip()
             self.fpsClock.tick(self.fps)

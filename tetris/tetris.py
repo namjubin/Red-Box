@@ -141,8 +141,9 @@ class Tetromino:
 
 
 class Tetris:
-    def __init__(self, screen):
+    def __init__(self, screen, joystick=False):
         self.screen = screen
+        self.joystick = joystick
         self.surface = pygame.Surface((WIDTH, HEIGHT))
         self.width = WIDTH // GRID_SIZE
         self.height = HEIGHT // GRID_SIZE
@@ -259,6 +260,27 @@ class Tetris:
             # Fill the screen with black
             self.surface.fill((BLACK))
             self.screen.fill((BLACK))
+
+            if self.joystick:
+                if self.joystick.ser.in_waiting > 0:
+                    data = self.joystick.value()
+                    joystick_push = self.joystick.push(data)
+
+                    if joystick_push[0]:
+                        if self.valid_move(self.current_piece, 0, 0, 1):
+                                self.current_piece.rotation += 1
+                    if joystick_push[1]:
+                        if self.valid_move(self.current_piece, -1, 0, 0):
+                                self.current_piece.x -= 1
+                    if joystick_push[3]:
+                        if self.valid_move(self.current_piece, 1, 0, 0):
+                                self.current_piece.x += 1
+                    if joystick_push[2]:
+                        while self.valid_move(self.current_piece, 0, 1, 0):
+                            self.current_piece.y += 1  # Move the piece down until it hits the bottom
+                        self.lock_piece(self.current_piece)
+
+
             for event in pygame.event.get():
                 # Check for the QUIT event
                 if event.type == pygame.QUIT:
