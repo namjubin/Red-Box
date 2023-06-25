@@ -32,5 +32,5 @@ void loop() {
   Serial.print(digitalRead(btn3));
   Serial.print(" ");
   Serial.println(digitalRead(btn4));
-  delay(100);
+  delay(150);
 }
