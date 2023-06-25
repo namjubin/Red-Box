@@ -1,6 +1,7 @@
-import sys
+import os
 import pygame
 import random
+from quit_circle.main import Quit_circle
 
 pygame.init()
 
@@ -161,6 +162,10 @@ class Tetris:
         self.setting()
 
     def setting(self):
+        self.run = True
+        self.quit_circle = Quit_circle(self.surface)
+        self.quit_circle_state = False
+        self.joystick_state = 0
         self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.current_piece = self.new_piece()
         self.game_over = False
@@ -251,12 +256,11 @@ class Tetris:
 
     def show(self):
         # Create a clock object
-        run = True
         clock = pygame.time.Clock()
         # Create a Tetris object
         fall_time = 0
         fall_speed = 10  # You can adjust this value to change the falling speed, it's in milliseconds
-        while run:
+        while self.run:
             # Fill the screen with black
             self.surface.fill((BLACK))
             self.screen.fill((BLACK))
@@ -265,6 +269,9 @@ class Tetris:
                 if self.joystick.ser.in_waiting > 0:
                     data = self.joystick.value()
                     joystick_push = self.joystick.push(data)
+
+                    self.quit_circle_state = data[2]
+                    self.joystick_state = self.quit_circle.set_loc(data[0])
 
                     if joystick_push[0]:
                         if self.valid_move(self.current_piece, 0, 0, 1):
@@ -284,11 +291,12 @@ class Tetris:
             for event in pygame.event.get():
                 # Check for the QUIT event
                 if event.type == pygame.QUIT:
-                    run = False
+                    self.joystick.ser.close()
+                    os._exit(os.EX_OK)
                 # Check for the KEYDOWN event
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        run = False
+                        self.run = False
                     if self.game_over:
                         self.setting()
                     else:
@@ -308,9 +316,7 @@ class Tetris:
                             while self.valid_move(self.current_piece, 0, 1, 0):
                                 self.current_piece.y += 1  # Move the piece down until it hits the bottom
                             self.lock_piece(self.current_piece)  # Lock the piece in place
-            # Get the number of milliseconds since the last frame
-            delta_time = clock.get_rawtime() 
-            # Add the delta time to the fall time
+
             fall_time += 1 
             if fall_time >= fall_speed:
                 # Move the piece down
@@ -327,14 +333,22 @@ class Tetris:
             
             self.screen.blit(self.img1, self.img1_loc)
             self.screen.blit(self.img2, self.img2_loc)
+
+            if self.quit_circle_state:
+                    self.quit_circle.show()
+            else:
+                if self.joystick_state == 1:
+                    self.joystick.ser.close()
+                    os._exit(os.EX_OK)
+                if self.joystick_state == 2:
+                    self.run = False
+
             self.screen.blit(pygame.transform.scale(self.surface, self.surface_size), self.surface_loc)
             
             # Update the display
             pygame.display.flip()
             # Set the framerate
             clock.tick(60)
-
-
 
 def draw_score(screen, score, x, y):
     font = pygame.font.Font(None, 36)

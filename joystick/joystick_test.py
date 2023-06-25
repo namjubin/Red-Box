@@ -21,6 +21,9 @@ class Joystick:
         self.joystick_surface = pg.Surface((510, 510))
         self.button_surface = pg.Surface((510,510))
 
+        self.setting()
+    
+    def setting(self):
         self.btn_state = [False, False, False, False]
 
     def value(self):

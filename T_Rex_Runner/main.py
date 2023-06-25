@@ -2,7 +2,6 @@ import pygame as pg
 from random import *
 import os
 from quit_circle.main import Quit_circle
-import sys
 
 class T_Rex_Runner:
     def __init__(self, screen, joystick=False, fps=60):
@@ -12,7 +11,6 @@ class T_Rex_Runner:
         self.screen_size = pg.display.get_surface().get_size()
         self.size = (800,600)
         self.fpsClock = pg.time.Clock()
-        self.run = True
 
         self.surface = pg.Surface((800, 600))
         self.surface_size = ((self.screen_size[1]/600)*800, self.screen_size[1])
@@ -61,13 +59,10 @@ class T_Rex_Runner:
 
         self.fontObj = pg.font.Font(self.image_loc+'T_Rex_Runner/font/PressStart2P-Regular.ttf', 14)
 
-        self.quit_circle = Quit_circle(self.surface)
-        self.quit_circle_state = False
-        self.joystick_state = 0
-
         self.setting()
 
     def setting(self):
+        self.run = True
         self.jump_start = False
         self.runing = False
         self.state = True
@@ -85,6 +80,10 @@ class T_Rex_Runner:
         self.collision = False
         self.gravity = 9
         self.weight = 0
+
+        self.quit_circle = Quit_circle(self.surface)
+        self.quit_circle_state = False
+        self.joystick_state = 0
 
         f = open(self.image_loc+'T_Rex_Runner/high_score.txt')
         self.high_score = int(f.readline())
@@ -271,7 +270,8 @@ class T_Rex_Runner:
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.run = False
+                    self.joystick.ser.close()
+                    os._exit(os.EX_OK)
 
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
@@ -306,11 +306,10 @@ class T_Rex_Runner:
                     self.quit_circle.show()
             else:
                 if self.joystick_state == 1:
-                    self.run = False
-                    return True
+                    self.joystick.ser.close()
+                    os._exit(os.EX_OK)
                 if self.joystick_state == 2:
                     self.run = False
-                    return False
 
             self.screen.blit(pg.transform.scale(self.surface, self.surface_size), self.surface_loc)
 

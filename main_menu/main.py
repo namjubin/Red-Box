@@ -92,6 +92,7 @@ class Main_menu:
 
         if self.joystick:
             self.game_list = [self.joystick.start, self.t_rex_runner.show, self.tetris.show]
+            self.setting_list = [self.joystick.setting, self.t_rex_runner.setting, self.tetris.setting]
         else:
             self.game_list = [None, self.t_rex_runner.show, self.tetris.show]
 
@@ -170,8 +171,8 @@ class Main_menu:
                             if joystick_push[2]:
                                 try:
                                     self.game_list[self.index]()
+                                    self.setting_list[self.index]()
                                 except:
-                                    self.game_list[self.index]()
                                     print("게임 로딩 실패")
                 except:
                     try:
@@ -203,10 +204,8 @@ class Main_menu:
                         
                         if event.key == pg.K_SPACE:
                             try:
-                                if self.game_list[self.index]():
-                                    self.joystick.ser.close()
-                                    pygame.quit()
-                                    sys.exit()
+                                self.game_list[self.index]()
+                                self.game_class[self.index].setting()
                                 
                             except:
                                 print("게임 로딩 실패")
